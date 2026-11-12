@@ -1,8 +1,7 @@
 // Terpvate Service Worker - Network-First App Shell (PRD §1.2 & §8.3 E8)
-const CACHE_NAME = 'terpvate-app-v2';
+const CACHE_NAME = 'terpvate-app-v3';
 
 self.addEventListener('install', () => {
-  // Activate immediately without waiting for old tabs to close
   self.skipWaiting();
 });
 
@@ -23,7 +22,6 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
 
   // 1. Navigation / HTML pages: NETWORK-FIRST
-  // Guarantees browser never gets stuck with a stale index.html pointing to old JS hashes
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
@@ -35,8 +33,7 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         })
         .catch(() => {
-          // Only serve cached index.html when user is genuinely offline
-          return caches.match('/') as Promise<Response>;
+          return caches.match('/');
         })
     );
     return;
@@ -59,7 +56,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3. Default (manifest, icons, logo): Stale-while-revalidate
+  // 3. Other static requests: Network with cache fallback
   event.respondWith(
     caches.match(event.request).then((cached) => {
       const fetchPromise = fetch(event.request).then((networkResponse) => {
@@ -68,7 +65,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
         return networkResponse;
-      }).catch(() => cached as Response);
+      }).catch(() => cached);
 
       return cached || fetchPromise;
     })

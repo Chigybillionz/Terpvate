@@ -9,19 +9,39 @@
     <meta name="referrer" content="no-referrer" />
     <link rel="manifest" href="/manifest.json" />
     <title>Terpvate — Give privately. One tap.</title>
+    <script>
+      // Self-healing: automatically clear stale service worker caches if an older chunk fails
+      window.addEventListener('error', function(e) {
+        if (e && e.message && e.message.indexOf('Failed to load module script') !== -1) {
+          if (!sessionStorage.getItem('terpvate_reloaded')) {
+            sessionStorage.setItem('terpvate_reloaded', '1');
+            if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.getRegistrations().then(function(regs) {
+                for (var i = 0; i < regs.length; i++) { regs[i].unregister(); }
+              });
+            }
+            if ('caches' in window) {
+              caches.keys().then(function(keys) {
+                for (var j = 0; j < keys.length; j++) { caches.delete(keys[j]); }
+              });
+            }
+            setTimeout(function() { window.location.reload(); }, 200);
+          }
+        }
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
       if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').then((reg) => {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js').then(function(reg) {
             reg.update();
-          }).catch(() => {});
+          }).catch(function() {});
         });
       }
     </script>
   </body>
 </html>
-

@@ -433,6 +433,25 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
             >
               🧪 Fill Testnet Sapling
             </Button>
+            <a
+              href="zcash:"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 12px',
+                backgroundColor: 'var(--color-surface)',
+                border: '1px solid rgba(15,23,42,0.15)',
+                borderRadius: 'var(--radius-md)',
+                color: 'var(--color-ink)',
+                fontSize: '12px',
+                fontWeight: 600,
+                textDecoration: 'none',
+              }}
+            >
+              <ExternalLink size={14} />
+              <span>Open Zodl / Wallet</span>
+            </a>
             <Button
               variant="ghost"
               fullWidth={false}

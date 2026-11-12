@@ -101,6 +101,14 @@ export const WalletsGuideScreen: React.FC<SupportProps> = ({ onBack }) => (
         </p>
         <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-info)' }}>Available on Android, iOS, Desktop</span>
       </Card>
+
+      <Card style={{ padding: '16px' }}>
+        <h3 style={{ fontSize: '16px', fontWeight: 700 }}>4. Zodl</h3>
+        <p style={{ fontSize: '13px', color: 'var(--color-secondary)', margin: '4px 0 10px 0' }}>
+          Sleek mobile shielded Zcash wallet. Tap "Receive" inside Zodl to copy your private shielded address, then paste it here to claim.
+        </p>
+        <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-info)' }}>Available for iOS & Android</span>
+      </Card>
     </div>
 
     <Button variant="primary" onClick={onBack}>I have my address ready</Button>

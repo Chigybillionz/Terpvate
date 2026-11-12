@@ -100,3 +100,4 @@ class WorkerBridge {
 }
 
 export const workerBridge = new WorkerBridge();
+

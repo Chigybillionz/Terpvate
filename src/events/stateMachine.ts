@@ -109,7 +109,7 @@ export class GiftStateMachine {
         newState: nextState,
       });
       // Save state update asynchronously
-      StorageService.saveGift(updated).catch(() => {});
+      StorageService.saveGift(updated).catch(() => { });
     }
 
     return updated;

@@ -166,3 +166,4 @@ export class ClaimViewModel {
     return zatoshisToZec(this.state.amountZat);
   }
 }
+

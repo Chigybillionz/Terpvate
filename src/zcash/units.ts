@@ -26,3 +26,4 @@ export function formatZecDisplay(zecStr: string | number): string {
     maximumFractionDigits: 8,
   });
 }
+

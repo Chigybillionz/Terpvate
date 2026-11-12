@@ -16,3 +16,4 @@ export function t(path: string, fallback?: string): string {
 
   return typeof current === 'string' ? current : fallback || path;
 }
+

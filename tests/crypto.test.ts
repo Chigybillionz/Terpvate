@@ -38,3 +38,4 @@ describe('CryptoService (PRD §13.2 & §14.2)', () => {
     ).rejects.toThrow();
   });
 });
+

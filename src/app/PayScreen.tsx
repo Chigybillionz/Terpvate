@@ -164,3 +164,4 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
     </div>
   );
 };
+

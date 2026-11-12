@@ -18,3 +18,4 @@ export function calculateZip317Fee(logicalActions: number = 2): number {
 export function getClaimFeeZat(): number {
   return STANDARD_CLAIM_FEE_ZAT;
 }
+

@@ -1,6 +1,6 @@
 {
-  "name": "Tip — Private Gift Card",
-  "short_name": "Tip",
+  "name": "Terpvate — Give privately. One tap.",
+  "short_name": "Terpvate",
   "description": "A one-tap private tip and gift card, built on the Zcash ecosystem.",
   "start_url": "/",
   "display": "standalone",
@@ -9,10 +9,11 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ]
 }
+

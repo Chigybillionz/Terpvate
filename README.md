@@ -70,3 +70,4 @@ npm run build
 - **Fitts's Law Ergonomics**: All primary action targets ≥ 48px, positioned in the lower thumb-zone; keypad targets 56px.
 - **Honest Feedback**: Real-time confirmation states (0/3 → 3/3, ~4 min) with reassuring microcopy (*"Your money is safe. Nothing has been lost."*).
 - **Network Resilience**: Target bundle under 150 KB, lazy-loaded WASM worker, offline-first IndexedDB persistence.
+

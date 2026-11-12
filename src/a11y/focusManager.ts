@@ -13,3 +13,4 @@ export function focusHeading(selector: string = 'h1, h2'): void {
     }
   }, 100);
 }
+

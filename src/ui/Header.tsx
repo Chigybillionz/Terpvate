@@ -40,25 +40,19 @@ export const Header: React.FC<HeaderProps> = ({
           userSelect: 'none',
         }}
       >
-        <div
+        <img
+          src="/logo.jpg"
+          alt="Terpvate logo"
           style={{
-            width: '36px',
-            height: '36px',
+            width: '38px',
+            height: '38px',
             borderRadius: '10px',
-            backgroundColor: 'var(--color-action)',
+            objectFit: 'cover',
             border: '2px solid var(--color-outline)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 800,
-            fontSize: '18px',
-            color: '#0F172A',
           }}
-        >
-          ⓩ
-        </div>
+        />
         <div>
-          <span style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.02em' }}>Tip</span>
+          <span style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.02em' }}>Terpvate</span>
           <span
             style={{
               fontSize: '11px',
@@ -151,3 +145,4 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
+

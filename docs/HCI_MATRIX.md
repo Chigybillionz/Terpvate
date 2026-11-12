@@ -22,3 +22,4 @@
 | 18 | Evaluation & Metrics | Formative and summative testing; System Usability Scale (SUS benchmark 68, target ≥80); time-on-task, error recovery. | §3.3, §16 |
 | 19 | Event-Driven Architecture | Event loop IoC; Web Worker off-thread execution (never block UI thread); typed pub/sub bus; light event sourcing. | §7.6, §13.7 |
 | 20 | Architecture Patterns | MVVM pattern; 12 house rules; thin views; business logic in services; domain model separation. | §13.4, §13.6, §13.9 |
+

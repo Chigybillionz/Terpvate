@@ -1,7 +1,7 @@
 {
   "app": {
-    "title": "Tip",
-    "subtitle": "Private Tip & Gift Card on Zcash",
+    "title": "Terpvate",
+    "subtitle": "Give privately. One tap.",
     "tagline": "Send a private gift. Pick an amount, add a message, share one link."
   },
   "nav": {
@@ -77,3 +77,4 @@
     "serverUnreachable": "We can't reach the Zcash network right now. Your gift is safe. We'll retry."
   }
 }
+

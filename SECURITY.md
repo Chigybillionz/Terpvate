@@ -14,3 +14,4 @@
 
 ## Reporting a Vulnerability
 To report security concerns, please create a confidential security advisory or reach out directly to the security team.
+

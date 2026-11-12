@@ -94,3 +94,4 @@ export const StepBar: React.FC<StepBarProps> = ({ currentStep, totalSteps = 4 })
     </div>
   );
 };
+

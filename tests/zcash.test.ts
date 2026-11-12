@@ -79,3 +79,4 @@ describe('ZIP 321 Payment Requests (PRD §13.1)', () => {
     expect(parsed?.amountZec).toBe('0.0501');
   });
 });
+

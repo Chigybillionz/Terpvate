@@ -47,3 +47,4 @@ export function parseZip321Uri(uri: string): Zip321PaymentRequest | null {
     return null;
   }
 }
+

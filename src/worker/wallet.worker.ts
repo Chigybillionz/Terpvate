@@ -90,3 +90,4 @@ self.addEventListener('message', async (event: MessageEvent<WorkerRequest>) => {
     } as WorkerResponse);
   }
 });
+

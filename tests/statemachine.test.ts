@@ -99,3 +99,4 @@ describe('Gift State Machine (PRD §7.6 & §13.7)', () => {
     expect(gift.refundTxid).toBe('refund_txid_456');
   });
 });
+

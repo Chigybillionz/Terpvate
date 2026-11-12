@@ -1,7 +1,48 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { LightwalletdService } from '../src/services/LightwalletdService';
 
 describe('LightwalletdService (PRD §13.4 & §13.7)', () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation(async (url: string) => {
+        if (url.includes('/latest-block')) {
+          return {
+            ok: true,
+            json: async () => ({ height: 2650123, hash: '0000000000123' }),
+          };
+        }
+        if (url.includes('/address-activity')) {
+          return {
+            ok: true,
+            json: async () => ({
+              receivedZat: 0,
+              confirmations: 0,
+              txid: undefined,
+            }),
+          };
+        }
+        if (url.includes('/send-transaction')) {
+          return {
+            ok: true,
+            json: async () => ({ txid: 'mock_txid_broadcast_123' }),
+          };
+        }
+        if (url.includes('/verify-note')) {
+          return {
+            ok: false,
+            status: 404,
+          };
+        }
+        return { ok: false, status: 404 };
+      })
+    );
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('provides verified default high-availability endpoints', () => {
     const endpoints = LightwalletdService.getEndpoints();
     expect(endpoints.length).toBeGreaterThanOrEqual(3);

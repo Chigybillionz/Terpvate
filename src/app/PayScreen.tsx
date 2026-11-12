@@ -375,7 +375,7 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
           }}
         >
           <PlayCircle size={16} />
-          <span>Simulate Full Payment & Jump to Ready (Test)</span>
+          <span>Simulate Testnet Payment (Mines 1 ZEC to Ready)</span>
         </Button>
 
         <Button

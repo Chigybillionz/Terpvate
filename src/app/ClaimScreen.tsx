@@ -12,9 +12,7 @@ import {
   HelpCircle,
   Clock,
   AlertTriangle,
-  Copy,
   ExternalLink,
-  Check,
 } from 'lucide-react';
 
 interface ClaimScreenProps {
@@ -77,7 +75,8 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
   // R7: Success Screen & Claim Figures Receipt
   if (subStep === 'done' || state.isClaimed) {
     const zecAmount = viewModel.getDisplayZec();
-    const fiat = PriceService.estimateNgn(zecAmount);
+    const fiatNgn = PriceService.estimateNgn(zecAmount);
+    const fiatUsd = PriceService.estimate(zecAmount, 'USD');
     const isTestnet =
       state.receiverAddress.startsWith('utest1') ||
       state.receiverAddress.startsWith('ztestsapling1');
@@ -118,7 +117,7 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
               {zecAmount} ZEC
             </div>
             <div style={{ fontSize: '15px', fontWeight: 600, color: '#92400E', marginTop: '4px' }}>
-              ≈ {fiat.ngnFormatted} ({fiat.usdFormatted})
+              ≈ ₦{Number(fiatNgn.fiatAmount).toLocaleString()} (${fiatUsd.fiatAmount} USD)
             </div>
           </div>
 
@@ -155,7 +154,7 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
 
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(15,23,42,0.06)', paddingBottom: '8px' }}>
               <span style={{ color: 'var(--color-secondary)' }}>Estimated Value</span>
-              <span style={{ fontWeight: 600 }}>{fiat.ngnFormatted}</span>
+              <span style={{ fontWeight: 600 }}>≈ ₦{Number(fiatNgn.fiatAmount).toLocaleString()} (${fiatUsd.fiatAmount} USD)</span>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(15,23,42,0.06)', paddingBottom: '8px' }}>

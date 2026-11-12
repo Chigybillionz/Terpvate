@@ -17,11 +17,15 @@ import {
 import { SendViewModel } from '../viewmodels/SendVM';
 import { MyGiftsViewModel } from '../viewmodels/MyGiftsVM';
 import { GiftRecord, StorageService } from '../services/StorageService';
+import { LightwalletdService } from '../services/LightwalletdService';
 import { liveAnnouncer } from '../a11y/liveAnnouncer';
 import { focusHeading } from '../a11y/focusManager';
 
 export const App: React.FC = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [network, setNetwork] = useState<'mainnet' | 'testnet'>(() => {
+    return LightwalletdService.getActiveEndpoint().network;
+  });
   const [route, setRoute] = useState<string>('send');
   const [giftHashFragment, setGiftHashFragment] = useState<string>('');
   const [activeGift, setActiveGift] = useState<GiftRecord | null>(null);
@@ -79,6 +83,13 @@ export const App: React.FC = () => {
     StorageService.saveSettings({ theme: next });
   };
 
+  const toggleNetwork = () => {
+    const next = network === 'mainnet' ? 'testnet' : 'mainnet';
+    setNetwork(next);
+    LightwalletdService.setActiveEndpoint(next === 'testnet' ? 'ecc-testnet' : 'zec-rocks');
+    liveAnnouncer.announce(`Switched to Zcash ${next === 'testnet' ? 'Testnet' : 'Mainnet'}`);
+  };
+
   const navigate = (nextRoute: string) => {
     setRoute(nextRoute);
     if (nextRoute === 'send') {
@@ -100,6 +111,8 @@ export const App: React.FC = () => {
         giftsCount={giftsCount}
         theme={theme}
         onToggleTheme={toggleTheme}
+        network={network}
+        onToggleNetwork={toggleNetwork}
       />
 
       {/* Main Content Area */}

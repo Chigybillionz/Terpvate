@@ -97,7 +97,7 @@ export class LightwalletdService {
 
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 6000);
+      const timeout = setTimeout(() => controller.abort(), 2500);
 
       // Lightwalletd REST/JSON-RPC or block height proxy
       const resp = await fetch(`${this.activeEndpoint.url}/api/v1/latest-block`, {
@@ -134,7 +134,7 @@ export class LightwalletdService {
   ): Promise<AddressActivity> {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 6000);
+      const timeout = setTimeout(() => controller.abort(), 2500);
 
       const resp = await fetch(
         `${this.activeEndpoint.url}/api/v1/address-activity?address=${encodeURIComponent(address)}&startHeight=${startHeight}`,
@@ -217,7 +217,7 @@ export class LightwalletdService {
     // 1. First, attempt to query the live lightwalletd endpoint
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 6000);
+      const timeout = setTimeout(() => controller.abort(), 2500);
 
       const resp = await fetch(`${this.activeEndpoint.url}/api/v1/verify-note`, {
         method: 'POST',

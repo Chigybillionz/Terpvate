@@ -267,3 +267,4 @@ No dark patterns: no fake urgency, no pre-ticked options, no hidden fees. No tra
 
 # Appendix A · HCI Traceability Matrix (Groups 1–20)
 *See docs/HCI_MATRIX.md for the complete matrix mapping.*
+

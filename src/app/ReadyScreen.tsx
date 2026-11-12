@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { StepBar } from '../ui/StepBar';
+import { QrView } from '../ui/QrView';
 import { GiftRecord } from '../services/StorageService';
 import { liveAnnouncer } from '../a11y/liveAnnouncer';
-import { CheckCircle2, Copy, Share2, ShieldAlert } from 'lucide-react';
+import { CheckCircle2, Copy, Share2, ShieldAlert, QrCode } from 'lucide-react';
 
 interface ReadyScreenProps {
   gift: GiftRecord;
@@ -16,6 +17,7 @@ export const ReadyScreen: React.FC<ReadyScreenProps> = ({
   onTakeItBack,
 }) => {
   const [copied, setCopied] = useState(false);
+  const [showQr, setShowQr] = useState(false);
   const shareableUrl = gift.shareableLink || window.location.href;
 
   const handleCopy = async () => {
@@ -100,11 +102,29 @@ export const ReadyScreen: React.FC<ReadyScreenProps> = ({
             <span>{copied ? 'Copied! ✓' : 'Copy Link'}</span>
           </Button>
 
+          <Button
+            variant="secondary"
+            fullWidth={false}
+            onClick={() => setShowQr(!showQr)}
+            aria-label="Toggle QR code"
+          >
+            <QrCode size={18} />
+          </Button>
+
           <Button variant="primary" onClick={handleShare}>
             <Share2 size={16} />
             <span>Share</span>
           </Button>
         </div>
+
+        {showQr && (
+          <div style={{ marginTop: '16px', textAlign: 'center', borderTop: '1px solid rgba(15,23,42,0.06)', paddingTop: '16px' }}>
+            <p style={{ fontSize: '13px', color: 'var(--color-secondary)', marginBottom: '8px' }}>
+              Scan with phone camera or QR scanner
+            </p>
+            <QrView value={shareableUrl} size={180} />
+          </div>
+        )}
       </Card>
 
       {/* Safe Sharing Caution Alert (§14.2 Link intercepted mitigation) */}

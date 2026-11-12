@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { StepBar } from '../ui/StepBar';
+import { QrView } from '../ui/QrView';
 import { PayViewModel, PayState } from '../viewmodels/PayVM';
 import { GiftRecord } from '../services/StorageService';
 import { zatoshisToZec } from '../zcash/units';
@@ -138,26 +139,11 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
             <p style={{ fontSize: '13px', color: 'var(--color-secondary)', marginBottom: '12px' }}>
               Scan with Zashi, Zingo, or YWallet
             </p>
-            <div
-              style={{
-                width: '180px',
-                height: '180px',
-                backgroundColor: '#FFFFFF',
-                border: '2px solid #0F172A',
-                borderRadius: 'var(--radius-md)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '8px',
-                fontWeight: 600,
-                fontSize: '11px',
-                wordBreak: 'break-all',
-              }}
-            >
-              [ZIP-321 QR]
-              <br />
-              {state.gift.depositAddress.slice(0, 16)}...
-            </div>
+            <QrView
+              value={state.fundingUri}
+              size={190}
+              label={`${totalZec} ZEC to ${state.gift.depositAddress.slice(0, 16)}...`}
+            />
           </Card>
         )}
       </div>

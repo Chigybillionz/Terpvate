@@ -15,6 +15,7 @@ export interface DecodedGiftLink {
   secretHex: string;
   birthdayHeight: number;
   isPasscodeProtected: boolean;
+  amountZat?: number;
   encryptedMessageB64: string;
 }
 
@@ -23,16 +24,20 @@ export class LinkCodec {
 
   /**
    * Encodes gift parameters into a fragment string:
-   * "1.<secret>.<birthday>.<flags>.<encrypted-message>"
+   * "1.<secret>.<birthday>.<flags>.<amountZat>.<encrypted-message>"
    */
   static encodeFragment(params: {
     secretHex: string;
     birthdayHeight: number;
     isPasscodeProtected: boolean;
+    amountZat?: number;
     encryptedMessageB64?: string;
   }): string {
     const flags = params.isPasscodeProtected ? 1 : 0;
     const msg = params.encryptedMessageB64 || '';
+    if (params.amountZat !== undefined && params.amountZat > 0) {
+      return `${this.VERSION}.${params.secretHex}.${params.birthdayHeight}.${flags}.${params.amountZat}.${msg}`;
+    }
     return `${this.VERSION}.${params.secretHex}.${params.birthdayHeight}.${flags}.${msg}`;
   }
 
@@ -43,6 +48,7 @@ export class LinkCodec {
     secretHex: string;
     birthdayHeight: number;
     isPasscodeProtected: boolean;
+    amountZat?: number;
     encryptedMessageB64?: string;
     origin?: string;
   }): string {
@@ -80,13 +86,26 @@ export class LinkCodec {
 
     const flags = parseInt(parts[3], 10);
     const isPasscodeProtected = (flags & 1) === 1;
-    const encryptedMessageB64 = parts.slice(4).join('.'); // In case message contains dots
+
+    let amountZat: number | undefined;
+    let encryptedMessageB64 = '';
+
+    if (parts.length >= 5) {
+      // Check if parts[4] is amountZat (numeric)
+      if (parts[4].length > 0 && /^\d+$/.test(parts[4])) {
+        amountZat = parseInt(parts[4], 10);
+        encryptedMessageB64 = parts.slice(5).join('.');
+      } else {
+        encryptedMessageB64 = parts.slice(4).join('.');
+      }
+    }
 
     return {
       version,
       secretHex,
       birthdayHeight,
       isPasscodeProtected,
+      amountZat,
       encryptedMessageB64,
     };
   }

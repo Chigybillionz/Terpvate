@@ -16,20 +16,7 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
   onNavigateToHome,
 }) => {
   const [viewModel] = useState(() => new ClaimViewModel(fragment));
-  const [state, setState] = useState<ClaimState>(() => ({
-    fragment,
-    isPasscodeProtected: false,
-    passcodeInput: '',
-    amountZat: 5_000_000,
-    claimFeeZat: 10_000,
-    messagePlain: '',
-    isVerifying: true,
-    isVerified: false,
-    receiverAddress: '',
-    addressValidation: { isValid: false, type: 'invalid', isShielded: false },
-    isClaiming: false,
-    isClaimed: false,
-  }));
+  const [state, setState] = useState<ClaimState>(() => viewModel.getState());
 
   // Step sub-state within receiver journey: 'landing' -> 'address' -> 'confirm' -> 'done'
   const [subStep, setSubStep] = useState<'landing' | 'address' | 'confirm' | 'done'>('landing');

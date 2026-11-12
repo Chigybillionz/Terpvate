@@ -153,6 +153,7 @@ export const App: React.FC = () => {
 
         {route === 'claim' && (
           <ClaimScreen
+            key={giftHashFragment}
             fragment={giftHashFragment}
             onNavigateToWallets={() => setRoute('wallets')}
             onNavigateToHome={() => {

@@ -4,7 +4,7 @@ import { Button } from '../ui/Button';
 import { StepBar } from '../ui/StepBar';
 import { QrView } from '../ui/QrView';
 import { PayViewModel, PayState } from '../viewmodels/PayVM';
-import { GiftRecord } from '../services/StorageService';
+import { GiftRecord, StorageService } from '../services/StorageService';
 import { zatoshisToZec } from '../zcash/units';
 import { liveAnnouncer } from '../a11y/liveAnnouncer';
 import {
@@ -283,8 +283,11 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
         </p>
         <Button
           variant="secondary"
-          onClick={() => {
-            // Trigger confirmation directly
+          onClick={async () => {
+            // Trigger confirmation and transition state to READY
+            gift.state = 'READY';
+            gift.confirmations = 3;
+            await StorageService.saveGift(gift);
             onPaymentConfirmed(gift);
           }}
         >

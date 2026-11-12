@@ -68,6 +68,7 @@ export class GiftService {
       secretHex: isPasscodeProtected ? wrappedSecretHex! : secretHex,
       birthdayHeight,
       isPasscodeProtected,
+      amountZat,
       encryptedMessageB64: messageEnc,
     });
 

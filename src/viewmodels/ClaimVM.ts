@@ -6,6 +6,7 @@
 import { LinkCodec, DecodedGiftLink } from '../services/LinkCodec';
 import { CryptoService } from '../services/CryptoService';
 import { GiftService } from '../services/GiftService';
+import { StorageService } from '../services/StorageService';
 import { validateZcashAddress, AddressValidationResult } from '../zcash/address';
 import { zatoshisToZec } from '../zcash/units';
 import { liveAnnouncer } from '../a11y/liveAnnouncer';
@@ -35,11 +36,26 @@ export class ClaimViewModel {
   private listeners = new Set<(state: ClaimState) => void>();
 
   constructor(fragment: string) {
+    let initialAmountZat = 5_000_000;
+    let isPasscodeProtected = false;
+    let decodedLink: DecodedGiftLink | undefined;
+
+    try {
+      decodedLink = LinkCodec.decodeFragment(fragment);
+      isPasscodeProtected = decodedLink.isPasscodeProtected;
+      if (decodedLink.amountZat && decodedLink.amountZat > 0) {
+        initialAmountZat = decodedLink.amountZat;
+      }
+    } catch {
+      // Defer error to parseAndVerify
+    }
+
     this.state = {
       fragment,
-      isPasscodeProtected: false,
+      decoded: decodedLink,
+      isPasscodeProtected,
       passcodeInput: '',
-      amountZat: 5_000_000, // 0.05 ZEC default
+      amountZat: initialAmountZat,
       claimFeeZat: 10_000,
       messagePlain: '',
       isVerifying: true,
@@ -49,6 +65,10 @@ export class ClaimViewModel {
       isClaiming: false,
       isClaimed: false,
     };
+  }
+
+  getState(): ClaimState {
+    return { ...this.state };
   }
 
   subscribe(listener: (state: ClaimState) => void): () => void {
@@ -66,6 +86,30 @@ export class ClaimViewModel {
       const decoded = LinkCodec.decodeFragment(this.state.fragment);
       this.state.decoded = decoded;
       this.state.isPasscodeProtected = decoded.isPasscodeProtected;
+
+      if (decoded.amountZat && decoded.amountZat > 0) {
+        this.state.amountZat = decoded.amountZat;
+      }
+
+      // Cross-check stored gifts (for prototype/local testing on same browser)
+      try {
+        const storedGifts = await StorageService.getAllGifts();
+        const matched = storedGifts.find(
+          (g) =>
+            g.secretHex === decoded.secretHex ||
+            (decoded.secretHex && g.shareableLink?.includes(decoded.secretHex))
+        );
+        if (matched) {
+          if (matched.amountZat) {
+            this.state.amountZat = matched.amountZat;
+          }
+          if (matched.messagePlain && !this.state.messagePlain) {
+            this.state.messagePlain = matched.messagePlain;
+          }
+        }
+      } catch {
+        // Storage lookup fallback
+      }
 
       if (!decoded.isPasscodeProtected) {
         this.state.unwrappedSecretHex = decoded.secretHex;
@@ -151,7 +195,7 @@ export class ClaimViewModel {
 
       this.state.claimTxid = txid;
       this.state.isClaimed = true;
-      liveAnnouncer.announce(`Gift claimed! 0.05 ZEC is on its way to your wallet.`);
+      liveAnnouncer.announce(`Gift claimed! ${this.getDisplayZec()} ZEC is on its way to your wallet.`);
       return txid;
     } catch (err: any) {
       this.state.error = err?.message || 'Failed to claim gift';

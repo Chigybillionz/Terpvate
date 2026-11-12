@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="16" fill="#F8FAFC"/>
+  <!-- Envelope base -->
+  <rect x="10" y="18" width="44" height="32" rx="6" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+  <!-- Envelope flap -->
+  <path d="M11 20 L32 35 L53 20" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- Gold Shielded Coin seal -->
+  <circle cx="32" cy="35" r="10" fill="#F4B728" stroke="#0F172A" stroke-width="2"/>
+  <!-- Zcash Z glyph -->
+  <path d="M29 31 H35 L29 39 H35" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

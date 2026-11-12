@@ -1,0 +1,18 @@
+{
+  "name": "Tip — Private Gift Card",
+  "short_name": "Tip",
+  "description": "A one-tap private tip and gift card, built on the Zcash ecosystem.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#F4B728",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

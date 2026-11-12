@@ -119,11 +119,14 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
           fontSize: '20px',
           fontWeight: 800,
           textAlign: 'center',
-          marginBottom: '16px',
+          marginBottom: '4px',
         }}
       >
         {state.isUnderfunded ? 'Additional Payment Needed' : 'Fund your gift'}
       </h1>
+      <p style={{ fontSize: '13px', color: 'var(--color-secondary)', textAlign: 'center', marginBottom: '16px' }}>
+        Send ZEC directly from your personal wallet (Zodl, Zashi, YWallet) to this private gift envelope. No accounts or deposits needed.
+      </p>
 
       {/* Underfunded / Partial Payment Alert Banner (PRD §8.3) */}
       {state.isUnderfunded && (

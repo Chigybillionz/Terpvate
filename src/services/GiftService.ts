@@ -31,8 +31,9 @@ export class GiftService {
     // Approximate current block height (e.g. 2,600,000)
     const birthdayHeight = 2600000;
 
-    // Off-thread derive throw-away address
-    const { address } = await workerBridge.deriveAddress(secretHex);
+    // Off-thread derive throw-away address (Mainnet or Testnet)
+    const isTestnet = LightwalletdService.getActiveEndpoint().network === 'testnet';
+    const { address } = await workerBridge.deriveAddress(secretHex, isTestnet);
 
     let messageEnc: string | undefined;
     if (params.message) {
@@ -170,11 +171,17 @@ export class GiftService {
     feeZat: number;
     giftRecord?: GiftRecord;
   }): Promise<string> {
+    const isTestnet =
+      params.destinationAddress.startsWith('utest1') ||
+      params.destinationAddress.startsWith('ztestsapling1') ||
+      LightwalletdService.getActiveEndpoint().network === 'testnet';
+
     const txid = await workerBridge.buildAndBroadcastSweep(
       params.secretHex,
       params.destinationAddress,
       params.amountZat,
-      params.feeZat
+      params.feeZat,
+      isTestnet
     );
 
     if (params.giftRecord) {

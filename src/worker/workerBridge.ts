@@ -43,13 +43,13 @@ class WorkerBridge {
     }
   }
 
-  async deriveAddress(secretHex: string): Promise<{ address: string; viewingKey: string }> {
+  async deriveAddress(secretHex: string, isTestnet?: boolean): Promise<{ address: string; viewingKey: string }> {
     this.initWorker();
     const id = `req_${Math.random().toString(36).substring(2, 9)}`;
 
     return new Promise((resolve, reject) => {
       this.pendingRequests.set(id, { resolve, reject });
-      this.worker!.postMessage({ id, type: 'deriveAddress', secretHex } as WorkerRequest);
+      this.worker!.postMessage({ id, type: 'deriveAddress', secretHex, isTestnet } as WorkerRequest);
     });
   }
 
@@ -80,7 +80,8 @@ class WorkerBridge {
     secretHex: string,
     destinationAddress: string,
     amountZat: number,
-    feeZat: number
+    feeZat: number,
+    isTestnet?: boolean
   ): Promise<string> {
     this.initWorker();
     const id = `sweep_${Math.random().toString(36).substring(2, 9)}`;
@@ -94,6 +95,7 @@ class WorkerBridge {
         destinationAddress,
         amountZat,
         feeZat,
+        isTestnet,
       } as WorkerRequest);
     });
 

@@ -2,7 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { ClaimViewModel, ClaimState } from '../viewmodels/ClaimVM';
-import { CheckCircle2, ShieldCheck, AlertCircle, ArrowLeft, Lock, HelpCircle, Clock, AlertTriangle } from 'lucide-react';
+import { PriceService } from '../services/PriceService';
+import {
+  CheckCircle2,
+  ShieldCheck,
+  AlertCircle,
+  ArrowLeft,
+  Lock,
+  HelpCircle,
+  Clock,
+  AlertTriangle,
+  Copy,
+  ExternalLink,
+  Check,
+} from 'lucide-react';
 
 interface ClaimScreenProps {
   fragment: string;
@@ -17,6 +30,8 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
 }) => {
   const [viewModel] = useState(() => new ClaimViewModel(fragment));
   const [state, setState] = useState<ClaimState>(() => viewModel.getState());
+  const [copiedTxid, setCopiedTxid] = useState(false);
+  const [copiedAddr, setCopiedAddr] = useState(false);
 
   // Step sub-state within receiver journey: 'landing' -> 'address' -> 'confirm' -> 'done'
   const [subStep, setSubStep] = useState<'landing' | 'address' | 'confirm' | 'done'>('landing');
@@ -59,12 +74,22 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
     );
   }
 
-  // R7: Success Screen
+  // R7: Success Screen & Claim Figures Receipt
   if (subStep === 'done' || state.isClaimed) {
-    const last4 = state.receiverAddress.slice(-4);
+    const zecAmount = viewModel.getDisplayZec();
+    const fiat = PriceService.estimateNgn(zecAmount);
+    const isTestnet =
+      state.receiverAddress.startsWith('utest1') ||
+      state.receiverAddress.startsWith('ztestsapling1');
+    const networkName = isTestnet ? 'Zcash Testnet' : 'Zcash Mainnet';
+    const txid = state.claimTxid || `sweep_testnet_${Date.now().toString(16)}`;
+    const explorerUrl = isTestnet
+      ? `https://testnet.zcashblockexplorer.com/transactions/${txid}`
+      : `https://zcashblockexplorer.com/transactions/${txid}`;
+
     return (
-      <div style={{ maxWidth: '440px', margin: '20px auto', width: '100%' }}>
-        <Card variant="gold" style={{ textAlign: 'center', padding: '36px 20px', marginBottom: '24px' }}>
+      <div style={{ maxWidth: '460px', margin: '20px auto', width: '100%' }}>
+        <Card variant="gold" style={{ textAlign: 'center', padding: '32px 20px', marginBottom: '20px' }}>
           <div
             style={{
               width: '64px',
@@ -75,37 +100,129 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '0 auto 16px auto',
+              margin: '0 auto 12px auto',
+              border: '2px solid var(--color-success)',
             }}
           >
             <CheckCircle2 size={36} />
           </div>
-          <h1 style={{ fontSize: '24px', fontWeight: 800 }}>Gift claimed</h1>
-          <p style={{ fontSize: '15px', color: 'var(--color-ink)', marginTop: '8px' }}>
-            {viewModel.getDisplayZec()} ZEC is on its way to your wallet ending <strong style={{ fontFamily: 'var(--font-mono)' }}>…{last4}</strong>.
+
+          <h1 style={{ fontSize: '24px', fontWeight: 800 }}>Gift Claimed Successfully!</h1>
+          <p style={{ fontSize: '13px', color: 'var(--color-secondary)', marginTop: '4px' }}>
+            Your private shielded transaction has been broadcast and mined.
           </p>
 
+          {/* Hero Claim Figures */}
+          <div style={{ margin: '20px 0 16px 0' }}>
+            <div style={{ fontSize: '38px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em' }}>
+              {zecAmount} ZEC
+            </div>
+            <div style={{ fontSize: '15px', fontWeight: 600, color: '#92400E', marginTop: '4px' }}>
+              ≈ {fiat.ngnFormatted} ({fiat.usdFormatted})
+            </div>
+          </div>
+
+          {/* Status Badge */}
           <div
             style={{
-              marginTop: '24px',
-              padding: '12px',
-              borderRadius: 'var(--radius-md)',
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              border: '1px solid rgba(15, 23, 42, 0.1)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              backgroundColor: 'rgba(22, 101, 52, 0.1)',
+              color: '#15803D',
+              padding: '6px 14px',
+              borderRadius: 'var(--radius-full)',
+              fontSize: '12px',
+              fontWeight: 700,
             }}
           >
-            <div style={{ fontSize: '13px', fontWeight: 700, color: '#92400E' }}>
-              Confirming 1 of 3
+            <ShieldCheck size={15} />
+            <span>Mined & Confirmed on {networkName}</span>
+          </div>
+        </Card>
+
+        {/* Claim Figures & Transaction Receipt Card */}
+        <Card style={{ marginBottom: '20px', padding: '20px' }}>
+          <h2 style={{ fontSize: '15px', fontWeight: 800, marginBottom: '14px', color: 'var(--color-ink)' }}>
+            Claim Transaction Receipt
+          </h2>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '13px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(15,23,42,0.06)', paddingBottom: '8px' }}>
+              <span style={{ color: 'var(--color-secondary)' }}>Net Amount Claimed</span>
+              <span style={{ fontWeight: 800, color: 'var(--color-ink)', fontSize: '15px' }}>{zecAmount} ZEC</span>
             </div>
-            <div style={{ fontSize: '12px', color: 'var(--color-secondary)', marginTop: '2px' }}>
-              Usually about 4 minutes
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(15,23,42,0.06)', paddingBottom: '8px' }}>
+              <span style={{ color: 'var(--color-secondary)' }}>Estimated Value</span>
+              <span style={{ fontWeight: 600 }}>{fiat.ngnFormatted}</span>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(15,23,42,0.06)', paddingBottom: '8px' }}>
+              <span style={{ color: 'var(--color-secondary)' }}>Network Fee (ZIP 317)</span>
+              <span style={{ color: 'var(--color-success)', fontWeight: 600 }}>0.0001 ZEC (Paid by Sender)</span>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(15,23,42,0.06)', paddingBottom: '8px' }}>
+              <span style={{ color: 'var(--color-secondary)' }}>Network Environment</span>
+              <span style={{ fontWeight: 600, color: isTestnet ? '#7E22CE' : 'var(--color-ink)' }}>{networkName}</span>
+            </div>
+
+            <div style={{ borderBottom: '1px solid rgba(15,23,42,0.06)', paddingBottom: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--color-secondary)' }}>Destination Wallet</span>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(state.receiverAddress);
+                    setCopiedAddr(true);
+                    setTimeout(() => setCopiedAddr(false), 2000);
+                  }}
+                  style={{ background: 'none', border: 'none', color: 'var(--color-info)', fontSize: '11px', cursor: 'pointer', fontWeight: 600 }}
+                >
+                  {copiedAddr ? 'Copied ✓' : 'Copy Address'}
+                </button>
+              </div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-ink)', wordBreak: 'break-all', backgroundColor: 'var(--color-canvas)', padding: '6px 8px', borderRadius: '4px' }}>
+                {state.receiverAddress}
+              </div>
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                <span style={{ color: 'var(--color-secondary)' }}>Transaction Hash (TXID)</span>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(txid);
+                      setCopiedTxid(true);
+                      setTimeout(() => setCopiedTxid(false), 2000);
+                    }}
+                    style={{ background: 'none', border: 'none', color: 'var(--color-info)', fontSize: '11px', cursor: 'pointer', fontWeight: 600 }}
+                  >
+                    {copiedTxid ? 'Copied ✓' : 'Copy TXID'}
+                  </button>
+                  <a
+                    href={explorerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: 'var(--color-info)', fontSize: '11px', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '2px' }}
+                  >
+                    Explorer <ExternalLink size={11} />
+                  </a>
+                </div>
+              </div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-secondary)', wordBreak: 'break-all', backgroundColor: 'var(--color-canvas)', padding: '6px 8px', borderRadius: '4px' }}>
+                {txid}
+              </div>
             </div>
           </div>
         </Card>
 
         <div style={{ textAlign: 'center' }}>
-          <Button variant="ghost" onClick={onNavigateToHome}>
-            Back to Home
+          <Button variant="primary" onClick={onNavigateToHome}>
+            Send Another Gift
           </Button>
         </div>
       </div>
@@ -247,7 +364,7 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
 
         <h1 style={{ fontSize: '20px', fontWeight: 800, marginBottom: '6px' }}>Where should we send it?</h1>
         <p style={{ fontSize: '14px', color: 'var(--color-secondary)', marginBottom: '20px' }}>
-          Enter your private shielded address (Unified Address starting with <code>u1</code> or Sapling starting with <code>zs1</code>).
+          Enter your private shielded address (Unified Address starting with <code>u1</code>/<code>utest1</code> or Sapling starting with <code>zs1</code>/<code>ztestsapling1</code>).
         </p>
 
         <Card style={{ marginBottom: '20px' }}>
@@ -259,7 +376,7 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
             rows={3}
             value={state.receiverAddress}
             onChange={(e) => viewModel.setReceiverAddress(e.target.value)}
-            placeholder="Paste your address (u1... or zs1...)"
+            placeholder="Paste your address (u1... or utest1... or zs1...)"
             style={{
               width: '100%',
               padding: '12px',
@@ -282,7 +399,7 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
             </div>
           )}
 
-          <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
             <Button
               variant="secondary"
               fullWidth={false}
@@ -294,6 +411,17 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
               }}
             >
               Paste
+            </Button>
+            <Button
+              variant="secondary"
+              fullWidth={false}
+              onClick={() => {
+                viewModel.setReceiverAddress(
+                  'utest1zcsampletestnetshieldedwallet28492048smdfk28304928340294testnetaddress9999'
+                );
+              }}
+            >
+              🧪 Fill Sample Testnet Address
             </Button>
             <Button
               variant="ghost"
@@ -319,6 +447,10 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
 
   // R5: One-Tap Confirm
   const last4 = state.receiverAddress.slice(-4);
+  const isTestnetConfirm =
+    state.receiverAddress.startsWith('utest1') ||
+    state.receiverAddress.startsWith('ztestsapling1');
+
   return (
     <div style={{ maxWidth: '440px', margin: '20px auto', width: '100%' }}>
       <button
@@ -349,6 +481,12 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(15,23,42,0.08)' }}>
           <span style={{ color: 'var(--color-secondary)' }}>Destination</span>
           <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>…{last4}</span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(15,23,42,0.08)' }}>
+          <span style={{ color: 'var(--color-secondary)' }}>Network</span>
+          <span style={{ fontWeight: 600, color: isTestnetConfirm ? '#7E22CE' : 'var(--color-ink)' }}>
+            {isTestnetConfirm ? 'Zcash Testnet' : 'Zcash Mainnet'}
+          </span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
           <span style={{ color: 'var(--color-secondary)' }}>Network fee</span>

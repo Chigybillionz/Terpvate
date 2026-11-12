@@ -58,10 +58,26 @@ describe('Address Validation & Shielded Enforcement (PRD §5.1 F8, §8.3 E5–E7
 
   it('flags testnet addresses on mainnet', () => {
     const testnetAddr = 'utest1' + 'a'.repeat(55);
-    const res = validateZcashAddress(testnetAddr);
+    const res = validateZcashAddress(testnetAddr, 'mainnet');
     expect(res.isValid).toBe(false);
     expect(res.type).toBe('testnet');
     expect(res.errorMessage).toContain('test network');
+  });
+
+  it('accepts testnet Unified Addresses (utest1...) when in testnet mode', () => {
+    const testnetAddr = 'utest1' + 'a'.repeat(55);
+    const res = validateZcashAddress(testnetAddr, 'testnet');
+    expect(res.isValid).toBe(true);
+    expect(res.type).toBe('unified');
+    expect(res.isShielded).toBe(true);
+  });
+
+  it('accepts testnet Sapling addresses (ztestsapling1...) when in testnet mode', () => {
+    const testnetSapling = 'ztestsapling1' + 'a'.repeat(75);
+    const res = validateZcashAddress(testnetSapling, 'testnet');
+    expect(res.isValid).toBe(true);
+    expect(res.type).toBe('sapling');
+    expect(res.isShielded).toBe(true);
   });
 });
 

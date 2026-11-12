@@ -10,9 +10,9 @@
 
 // Worker message protocol
 export type WorkerRequest =
-  | { id: string; type: 'deriveAddress'; secretHex: string }
+  | { id: string; type: 'deriveAddress'; secretHex: string; isTestnet?: boolean }
   | { id: string; type: 'pollConfirmations'; address: string; required: number; birthdayHeight: number; requiredZat?: number }
-  | { id: string; type: 'buildSweepTx'; secretHex: string; destinationAddress: string; amountZat: number; feeZat: number };
+  | { id: string; type: 'buildSweepTx'; secretHex: string; destinationAddress: string; amountZat: number; feeZat: number; isTestnet?: boolean };
 
 export type WorkerResponse =
   | { id: string; type: 'addressDerived'; address: string; viewingKey: string }
@@ -27,9 +27,14 @@ self.addEventListener('message', async (event: MessageEvent<WorkerRequest>) => {
     switch (req.type) {
       case 'deriveAddress': {
         // Mock / WASM derivation of shielded throwaway address from 32-byte secret
-        // In full WebZjs / librustzcash, derives Orchard / Sapling UA
-        const dummyAddress = `u1${req.secretHex.slice(0, 30)}terpvate${req.secretHex.slice(30, 56)}`;
-        const viewingKey = `uview1${req.secretHex.slice(0, 40)}`;
+        // In full WebZjs / librustzcash, derives Orchard / Sapling UA for Mainnet or Testnet
+        const isTestnet = !!req.isTestnet;
+        const dummyAddress = isTestnet
+          ? `utest1${req.secretHex.slice(0, 26)}terpvate${req.secretHex.slice(26, 50)}`
+          : `u1${req.secretHex.slice(0, 30)}terpvate${req.secretHex.slice(30, 56)}`;
+        const viewingKey = isTestnet
+          ? `uviewtest1${req.secretHex.slice(0, 38)}`
+          : `uview1${req.secretHex.slice(0, 40)}`;
 
         self.postMessage({
           id: req.id,
@@ -67,7 +72,10 @@ self.addEventListener('message', async (event: MessageEvent<WorkerRequest>) => {
 
       case 'buildSweepTx': {
         // Off-thread ZK-SNARK proving and shielded transfer generation
-        const sweepTxid = `sweep_${Date.now().toString(16)}`;
+        const prefix = req.isTestnet || req.destinationAddress.startsWith('utest1') || req.destinationAddress.startsWith('ztestsapling1')
+          ? 'sweep_testnet_'
+          : 'sweep_';
+        const sweepTxid = `${prefix}${Date.now().toString(16)}_${Math.random().toString(36).substring(2, 8)}`;
         self.postMessage({
           id: req.id,
           type: 'sweepBuiltAndBroadcast',

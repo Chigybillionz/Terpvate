@@ -7,6 +7,8 @@ interface HeaderProps {
   giftsCount?: number;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
+  network?: 'mainnet' | 'testnet';
+  onToggleNetwork?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -15,6 +17,8 @@ export const Header: React.FC<HeaderProps> = ({
   giftsCount = 0,
   theme,
   onToggleTheme,
+  network = 'mainnet',
+  onToggleNetwork,
 }) => {
   return (
     <header
@@ -66,6 +70,30 @@ export const Header: React.FC<HeaderProps> = ({
           >
             SHIELDED
           </span>
+
+          {onToggleNetwork && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleNetwork();
+              }}
+              title="Click to toggle between Mainnet and Testnet simulation"
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                backgroundColor: network === 'testnet' ? 'rgba(168, 85, 247, 0.2)' : 'rgba(34, 197, 94, 0.15)',
+                color: network === 'testnet' ? '#7E22CE' : '#15803D',
+                border: network === 'testnet' ? '1px solid rgba(168, 85, 247, 0.4)' : '1px solid rgba(34, 197, 94, 0.4)',
+                padding: '2px 8px',
+                borderRadius: '6px',
+                marginLeft: '6px',
+                cursor: 'pointer',
+              }}
+            >
+              {network === 'testnet' ? '🧪 TESTNET' : '🟢 MAINNET'}
+            </button>
+          )}
         </div>
       </div>
 

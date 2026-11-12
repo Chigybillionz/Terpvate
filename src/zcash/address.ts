@@ -48,14 +48,35 @@ export function validateZcashAddress(
       return {
         isValid: false,
         type: 'testnet',
-        errorMessage: 'This address is for a test network. Use a normal Zcash address.',
+        errorMessage: 'This address is for a test network. Switch network or use a normal Zcash address.',
+        isShielded: false,
+      };
+    }
+  }
+
+  // Check mainnet prefixes if on testnet
+  if (network === 'testnet') {
+    if (
+      UNIFIED_MAINNET_REGEX.test(trimmed) ||
+      SAPLING_MAINNET_REGEX.test(trimmed) ||
+      TRANSPARENT_P2PKH_REGEX.test(trimmed) ||
+      TRANSPARENT_P2SH_REGEX.test(trimmed)
+    ) {
+      return {
+        isValid: false,
+        type: 'invalid',
+        errorMessage: 'This is a mainnet address. In Testnet mode, use a testnet shielded address (utest1... or ztestsapling1...).',
         isShielded: false,
       };
     }
   }
 
   // Check transparent addresses (E6) - Blocked in MVP
-  if (TRANSPARENT_P2PKH_REGEX.test(trimmed) || TRANSPARENT_P2SH_REGEX.test(trimmed)) {
+  if (
+    TRANSPARENT_P2PKH_REGEX.test(trimmed) ||
+    TRANSPARENT_P2SH_REGEX.test(trimmed) ||
+    TRANSPARENT_TESTNET_REGEX.test(trimmed)
+  ) {
     return {
       isValid: false,
       type: 'transparent',
@@ -66,7 +87,7 @@ export function validateZcashAddress(
   }
 
   // Check Unified Addresses (ZIP 316)
-  if (UNIFIED_MAINNET_REGEX.test(trimmed)) {
+  if (UNIFIED_MAINNET_REGEX.test(trimmed) || UNIFIED_TESTNET_REGEX.test(trimmed)) {
     return {
       isValid: true,
       type: 'unified',
@@ -75,7 +96,7 @@ export function validateZcashAddress(
   }
 
   // Check Sapling Shielded Addresses
-  if (SAPLING_MAINNET_REGEX.test(trimmed)) {
+  if (SAPLING_MAINNET_REGEX.test(trimmed) || SAPLING_TESTNET_REGEX.test(trimmed)) {
     return {
       isValid: true,
       type: 'sapling',

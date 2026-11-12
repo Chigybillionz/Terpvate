@@ -189,8 +189,15 @@ export class ClaimViewModel {
   }
 
   setReceiverAddress(address: string) {
-    this.state.receiverAddress = address;
-    this.state.addressValidation = validateZcashAddress(address);
+    const trimmed = address.trim();
+    this.state.receiverAddress = trimmed;
+
+    // Detect network or use active endpoint
+    const activeNetwork = LightwalletdService.getActiveEndpoint().network;
+    const isTestnetAddr = trimmed.startsWith('utest1') || trimmed.startsWith('ztestsapling1');
+    const network = isTestnetAddr || activeNetwork === 'testnet' ? 'testnet' : 'mainnet';
+
+    this.state.addressValidation = validateZcashAddress(trimmed, network);
     this.notify();
   }
 

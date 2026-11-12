@@ -57,22 +57,30 @@ export class StorageService {
     if (this.dbPromise) return this.dbPromise;
 
     this.dbPromise = new Promise((resolve, reject) => {
-      const request = indexedDB.open(DB_NAME, DB_VERSION);
+      if (typeof window === 'undefined' || typeof indexedDB === 'undefined') {
+        return reject(new Error('IndexedDB not available'));
+      }
 
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        if (!db.objectStoreNames.contains(STORE_GIFTS)) {
-          const store = db.createObjectStore(STORE_GIFTS, { keyPath: 'id' });
-          store.createIndex('state', 'state', { unique: false });
-          store.createIndex('createdAt', 'createdAt', { unique: false });
-        }
-        if (!db.objectStoreNames.contains(STORE_SETTINGS)) {
-          db.createObjectStore(STORE_SETTINGS, { keyPath: 'key' });
-        }
-      };
+      try {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+        request.onupgradeneeded = (event) => {
+          const db = (event.target as IDBOpenDBRequest).result;
+          if (!db.objectStoreNames.contains(STORE_GIFTS)) {
+            const store = db.createObjectStore(STORE_GIFTS, { keyPath: 'id' });
+            store.createIndex('state', 'state', { unique: false });
+            store.createIndex('createdAt', 'createdAt', { unique: false });
+          }
+          if (!db.objectStoreNames.contains(STORE_SETTINGS)) {
+            db.createObjectStore(STORE_SETTINGS, { keyPath: 'key' });
+          }
+        };
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      } catch (err) {
+        reject(err);
+      }
     });
 
     return this.dbPromise;

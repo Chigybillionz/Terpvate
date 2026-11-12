@@ -16,11 +16,8 @@ export default defineConfig({
   server: {
     port: 3000,
     headers: {
-      // COOP and COEP for SharedArrayBuffer / WASM multi-threading isolation
       'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Embedder-Policy': 'require-corp',
-      'Referrer-Policy': 'no-referrer',
+      'Cross-Origin-Embedder-Policy': 'credentialless',
     },
   },
 });
-

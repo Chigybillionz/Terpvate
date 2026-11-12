@@ -36,14 +36,18 @@ export const App: React.FC = () => {
     liveAnnouncer.init();
 
     // Load initial settings
-    StorageService.getSettings().then((settings) => {
-      setTheme(settings.theme === 'dark' ? 'dark' : 'light');
-    });
+    StorageService.getSettings()
+      .then((settings) => {
+        setTheme(settings.theme === 'dark' ? 'dark' : 'light');
+      })
+      .catch(() => {});
 
     // Check gifts count
-    StorageService.getAllGifts().then((gifts) => {
-      setGiftsCount(gifts.length);
-    });
+    StorageService.getAllGifts()
+      .then((gifts) => {
+        setGiftsCount(gifts.length);
+      })
+      .catch(() => {});
 
     // Front Doors Rule (Dan Brown §6.3 & §6.4): check hash for receiver claim
     const checkHash = () => {

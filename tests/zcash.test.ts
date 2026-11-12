@@ -65,19 +65,26 @@ describe('Address Validation & Shielded Enforcement (PRD §5.1 F8, §8.3 E5–E7
   });
 
   it('accepts testnet Unified Addresses (utest1...) when in testnet mode', () => {
-    const testnetAddr = 'utest1' + 'a'.repeat(55);
-    const res = validateZcashAddress(testnetAddr, 'testnet');
+    const testnetUa = 'utest1y5crk3j3t3nhylvgjw02nd9let27p6lkqyxpwg3d8pp5uktydaagtyym56cme37jmh508lsfzs0j5d2qfdtxzmrhs2xe3gawh8zvlksw6e38k';
+    const res = validateZcashAddress(testnetUa, 'testnet');
     expect(res.isValid).toBe(true);
     expect(res.type).toBe('unified');
     expect(res.isShielded).toBe(true);
   });
 
   it('accepts testnet Sapling addresses (ztestsapling1...) when in testnet mode', () => {
-    const testnetSapling = 'ztestsapling1' + 'a'.repeat(75);
+    const testnetSapling = 'ztestsapling1p52pkg3fxqmnu32v2ddxz6r0we7cfzujnxs20t44hnpu45wcmlnwma8mqgy3q9c7y5krx5tt3ue';
     const res = validateZcashAddress(testnetSapling, 'testnet');
     expect(res.isValid).toBe(true);
     expect(res.type).toBe('sapling');
     expect(res.isShielded).toBe(true);
+  });
+
+  it('rejects testnet addresses with invalid Bech32 characters (b, i, o, 1)', () => {
+    // Contains 'i' and 'o' which are forbidden in Bech32 / Bech32m
+    const invalidBech32 = 'utest1invalidwithcharactersio1b' + 'a'.repeat(40);
+    const res = validateZcashAddress(invalidBech32, 'testnet');
+    expect(res.isValid).toBe(false);
   });
 });
 

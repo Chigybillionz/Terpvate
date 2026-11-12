@@ -416,11 +416,22 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
               fullWidth={false}
               onClick={() => {
                 viewModel.setReceiverAddress(
-                  'utest1zcsampletestnetshieldedwallet28492048smdfk28304928340294testnetaddress9999'
+                  'utest1y5crk3j3t3nhylvgjw02nd9let27p6lkqyxpwg3d8pp5uktydaagtyym56cme37jmh508lsfzs0j5d2qfdtxzmrhs2xe3gawh8zvlksw6e38k'
                 );
               }}
             >
-              🧪 Fill Sample Testnet Address
+              🧪 Fill Testnet UA
+            </Button>
+            <Button
+              variant="secondary"
+              fullWidth={false}
+              onClick={() => {
+                viewModel.setReceiverAddress(
+                  'ztestsapling1p52pkg3fxqmnu32v2ddxz6r0we7cfzujnxs20t44hnpu45wcmlnwma8mqgy3q9c7y5krx5tt3ue'
+                );
+              }}
+            >
+              🧪 Fill Testnet Sapling
             </Button>
             <Button
               variant="ghost"

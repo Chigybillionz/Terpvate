@@ -40,6 +40,27 @@ describe('Gift State Machine (PRD §7.6 & §13.7)', () => {
     });
 
     expect(updated.state).toBe('UNDERFUNDED');
+    expect(updated.receivedZat).toBe(4_000_000);
+  });
+
+  it('recovers from UNDERFUNDED to CONFIRMING when top-up payment is received', () => {
+    let gift = makeTestGift();
+    gift = GiftStateMachine.transition(gift, {
+      type: 'paymentSeen',
+      txid: 'tx_fund_partial_1',
+      receivedZat: 4_000_000,
+    });
+    expect(gift.state).toBe('UNDERFUNDED');
+    expect(gift.receivedZat).toBe(4_000_000);
+
+    // Sender sends remaining 1,010,000 zatoshis
+    gift = GiftStateMachine.transition(gift, {
+      type: 'paymentSeen',
+      txid: 'tx_fund_partial_2',
+      receivedZat: 1_010_000,
+    });
+    expect(gift.state).toBe('CONFIRMING');
+    expect(gift.receivedZat).toBe(5_010_000);
   });
 
   it('transitions from CONFIRMING to READY after 3 confirmations', () => {

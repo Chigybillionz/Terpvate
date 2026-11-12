@@ -11,7 +11,7 @@
 // Worker message protocol
 export type WorkerRequest =
   | { id: string; type: 'deriveAddress'; secretHex: string }
-  | { id: string; type: 'pollConfirmations'; address: string; required: number; birthdayHeight: number }
+  | { id: string; type: 'pollConfirmations'; address: string; required: number; birthdayHeight: number; requiredZat?: number }
   | { id: string; type: 'buildSweepTx'; secretHex: string; destinationAddress: string; amountZat: number; feeZat: number };
 
 export type WorkerResponse =
@@ -42,9 +42,10 @@ self.addEventListener('message', async (event: MessageEvent<WorkerRequest>) => {
 
       case 'pollConfirmations': {
         // Simulated block timer (75s block target per §13.1)
-        // Sends immediate progress to acknowledge user, then updates
+        // Sends progressive updates matching required amount
         let currentConf = 0;
         const fakeTxid = `tx_${Date.now().toString(16)}`;
+        const requiredZat = req.requiredZat || 5010000;
 
         const interval = setInterval(() => {
           currentConf++;
@@ -54,7 +55,7 @@ self.addEventListener('message', async (event: MessageEvent<WorkerRequest>) => {
             confirmations: currentConf,
             isReady: currentConf >= req.required,
             txid: fakeTxid,
-            receivedZat: 5010000, // Meets default test amounts
+            receivedZat: requiredZat, // Accurately meets the expected gift amount
           } as WorkerResponse);
 
           if (currentConf >= req.required) {

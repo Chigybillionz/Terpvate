@@ -20,6 +20,7 @@ export interface GiftRecord {
   state: GiftState;
   amountZat: number;
   claimFeeZat: number;
+  receivedZat?: number;
   depositAddress: string;
   messagePlain?: string;
   messageEnc?: string;

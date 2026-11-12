@@ -57,7 +57,8 @@ class WorkerBridge {
     address: string,
     required: number,
     birthdayHeight: number,
-    onProgress: (res: any) => void
+    onProgress: (res: any) => void,
+    requiredZat?: number
   ): Promise<any> {
     this.initWorker();
     const id = `watch_${Math.random().toString(36).substring(2, 9)}`;
@@ -70,6 +71,7 @@ class WorkerBridge {
         address,
         required,
         birthdayHeight,
+        requiredZat,
       } as WorkerRequest);
     });
   }

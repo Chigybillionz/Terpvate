@@ -5,6 +5,8 @@
 
 import { GiftRecord, StorageService } from '../services/StorageService';
 import { GiftService } from '../services/GiftService';
+import { buildZip321Uri } from '../zcash/zip321';
+import { zatoshisToZec } from '../zcash/units';
 import { liveAnnouncer } from '../a11y/liveAnnouncer';
 
 export interface PayState {
@@ -15,6 +17,9 @@ export interface PayState {
   isConfirmed: boolean;
   isWatching: boolean;
   timeRemainingSeconds: number;
+  isUnderfunded: boolean;
+  receivedZat: number;
+  remainingZat: number;
   error?: string;
 }
 
@@ -23,7 +28,19 @@ export class PayViewModel {
   private listeners = new Set<(state: PayState) => void>();
 
   constructor(gift: GiftRecord) {
-    const fundingUri = GiftService.getFundingUri(gift);
+    const requiredZat = gift.amountZat + gift.claimFeeZat;
+    const receivedZat = gift.receivedZat || 0;
+    const isUnderfunded = gift.state === 'UNDERFUNDED';
+    const remainingZat = Math.max(0, requiredZat - receivedZat);
+
+    let fundingUri = GiftService.getFundingUri(gift);
+    if (isUnderfunded && remainingZat > 0) {
+      fundingUri = buildZip321Uri({
+        address: gift.depositAddress,
+        amountZec: zatoshisToZec(remainingZat),
+      });
+    }
+
     this.state = {
       gift,
       fundingUri,
@@ -32,6 +49,9 @@ export class PayViewModel {
       isConfirmed: gift.state === 'READY',
       isWatching: false,
       timeRemainingSeconds: 240, // ~4 minutes estimate
+      isUnderfunded,
+      receivedZat,
+      remainingZat,
     };
   }
 
@@ -50,19 +70,32 @@ export class PayViewModel {
     this.state.isWatching = true;
     this.notify();
 
-    GiftService.startFundingWatcher(this.state.gift, (confirmations, isReady) => {
-      this.state.confirmations = confirmations;
-      this.state.isConfirmed = isReady;
+    const requiredZat = this.state.gift.amountZat + this.state.gift.claimFeeZat;
 
-      liveAnnouncer.announce(
-        isReady
-          ? 'Payment confirmed. Your gift is ready to share.'
-          : `Payment seen. ${confirmations} of 3 confirmations.`
-      );
+    GiftService.startFundingWatcher(this.state.gift, (progress) => {
+      this.state.confirmations = progress.confirmations;
+      this.state.isConfirmed = progress.isReady;
+      this.state.isUnderfunded = progress.isUnderfunded;
+      this.state.receivedZat = progress.receivedZat;
+      this.state.remainingZat = progress.remainingZat;
+
+      if (progress.isUnderfunded && progress.remainingZat > 0) {
+        this.state.fundingUri = buildZip321Uri({
+          address: this.state.gift.depositAddress,
+          amountZec: zatoshisToZec(progress.remainingZat),
+        });
+        liveAnnouncer.announce(
+          `Additional payment needed. We received ${zatoshisToZec(progress.receivedZat)} ZEC but needed ${zatoshisToZec(requiredZat)} ZEC. Send remaining ${zatoshisToZec(progress.remainingZat)} ZEC.`
+        );
+      } else if (progress.isReady) {
+        liveAnnouncer.announce('Payment confirmed. Your gift is ready to share.');
+      } else {
+        liveAnnouncer.announce(`Payment seen. ${progress.confirmations} of 3 confirmations.`);
+      }
 
       this.notify();
 
-      if (isReady) {
+      if (progress.isReady) {
         this.state.isWatching = false;
         // Update local record
         StorageService.getGift(this.state.gift.id).then((updated) => {
@@ -72,5 +105,61 @@ export class PayViewModel {
       }
     });
   }
+
+  /**
+   * Simulates partial payment to test the underfunded handling and UI
+   */
+  async simulateUnderpayment(customReceivedZat?: number): Promise<void> {
+    const requiredZat = this.state.gift.amountZat + this.state.gift.claimFeeZat;
+    // Default to ~90% of total if not specified (e.g. 0.9 ZEC if 1 ZEC + 0.0001 fee)
+    const partialZat = customReceivedZat !== undefined
+      ? customReceivedZat
+      : Math.round(requiredZat * 0.9);
+
+    const remainingZat = Math.max(0, requiredZat - partialZat);
+
+    this.state.gift.state = 'UNDERFUNDED';
+    this.state.gift.receivedZat = partialZat;
+    this.state.gift.confirmations = 1;
+
+    this.state.isUnderfunded = true;
+    this.state.receivedZat = partialZat;
+    this.state.remainingZat = remainingZat;
+    this.state.confirmations = 1;
+    this.state.fundingUri = buildZip321Uri({
+      address: this.state.gift.depositAddress,
+      amountZec: zatoshisToZec(remainingZat),
+    });
+
+    await StorageService.saveGift(this.state.gift);
+
+    liveAnnouncer.announce(
+      `We received ${zatoshisToZec(partialZat)} ZEC but needed ${zatoshisToZec(requiredZat)} ZEC. Send the remaining ${zatoshisToZec(remainingZat)} ZEC.`
+    );
+
+    this.notify();
+  }
+
+  /**
+   * Simulates full payment resolution and triggers progression to Ready
+   */
+  async simulateFullPayment(onReady: () => void): Promise<void> {
+    const requiredZat = this.state.gift.amountZat + this.state.gift.claimFeeZat;
+    this.state.gift.state = 'READY';
+    this.state.gift.confirmations = 3;
+    this.state.gift.receivedZat = requiredZat;
+
+    this.state.isUnderfunded = false;
+    this.state.isConfirmed = true;
+    this.state.confirmations = 3;
+    this.state.receivedZat = requiredZat;
+    this.state.remainingZat = 0;
+
+    await StorageService.saveGift(this.state.gift);
+    liveAnnouncer.announce('Payment confirmed. Your gift is ready to share.');
+    this.notify();
+    onReady();
+  }
 }
+
 

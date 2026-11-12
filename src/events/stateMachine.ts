@@ -34,6 +34,7 @@ export class GiftStateMachine {
       case 'AWAITING_PAYMENT':
         if (event.type === 'paymentSeen') {
           updated.fundTxid = event.txid;
+          updated.receivedZat = event.receivedZat;
           const required = gift.amountZat + gift.claimFeeZat;
           if (event.receivedZat < required) {
             nextState = 'UNDERFUNDED';
@@ -45,8 +46,9 @@ export class GiftStateMachine {
 
       case 'UNDERFUNDED':
         if (event.type === 'paymentSeen') {
+          updated.receivedZat = (updated.receivedZat || 0) + event.receivedZat;
           const required = gift.amountZat + gift.claimFeeZat;
-          if (event.receivedZat >= required) {
+          if (updated.receivedZat >= required) {
             nextState = 'CONFIRMING';
           }
         }

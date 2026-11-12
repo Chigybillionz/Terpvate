@@ -4,7 +4,8 @@ import { Button } from '../ui/Button';
 import { StepBar } from '../ui/StepBar';
 import { QrView } from '../ui/QrView';
 import { PayViewModel, PayState } from '../viewmodels/PayVM';
-import { GiftRecord, StorageService } from '../services/StorageService';
+import { GiftRecord } from '../services/StorageService';
+import { LightwalletdService } from '../services/LightwalletdService';
 import { zatoshisToZec } from '../zcash/units';
 import { liveAnnouncer } from '../a11y/liveAnnouncer';
 import {
@@ -17,7 +18,8 @@ import {
   HelpCircle,
   PlayCircle,
   X,
-  Download,
+  AlertTriangle,
+  Globe,
 } from 'lucide-react';
 
 interface PayScreenProps {
@@ -27,20 +29,31 @@ interface PayScreenProps {
 
 export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }) => {
   const [viewModel] = useState(() => new PayViewModel(gift));
-  const [state, setState] = useState<PayState>(() => ({
-    gift,
-    fundingUri: '',
-    confirmations: gift.confirmations || 0,
-    requiredConfirmations: 3,
-    isConfirmed: gift.state === 'READY',
-    isWatching: false,
-    timeRemainingSeconds: 240,
-  }));
+  const [state, setState] = useState<PayState>(() => {
+    const requiredZat = gift.amountZat + gift.claimFeeZat;
+    const receivedZat = gift.receivedZat || 0;
+    const isUnderfunded = gift.state === 'UNDERFUNDED';
+    const remainingZat = Math.max(0, requiredZat - receivedZat);
+
+    return {
+      gift,
+      fundingUri: '',
+      confirmations: gift.confirmations || 0,
+      requiredConfirmations: 3,
+      isConfirmed: gift.state === 'READY',
+      isWatching: false,
+      timeRemainingSeconds: 240,
+      isUnderfunded,
+      receivedZat,
+      remainingZat,
+    };
+  });
 
   const [showQr, setShowQr] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [walletAttemptFailed, setWalletAttemptFailed] = useState(false);
+  const activeEndpoint = LightwalletdService.getActiveEndpoint();
 
   useEffect(() => {
     const unsub = viewModel.subscribe(setState);
@@ -52,7 +65,10 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
 
   const giftZec = zatoshisToZec(gift.amountZat);
   const feeZec = zatoshisToZec(gift.claimFeeZat);
-  const totalZec = zatoshisToZec(gift.amountZat + gift.claimFeeZat);
+  const totalZat = gift.amountZat + gift.claimFeeZat;
+  const totalZec = zatoshisToZec(totalZat);
+  const remainingZec = zatoshisToZec(state.remainingZat);
+  const receivedZec = zatoshisToZec(state.receivedZat);
 
   const handleOpenWallet = () => {
     setWalletAttemptFailed(false);
@@ -81,16 +97,60 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
     <div style={{ maxWidth: '440px', margin: '0 auto', width: '100%' }}>
       <StepBar currentStep={3} />
 
+      {/* Lightwalletd Network Indicator */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '6px',
+          fontSize: '11px',
+          color: 'var(--color-secondary)',
+          marginBottom: '14px',
+          fontWeight: 600,
+        }}
+      >
+        <Globe size={13} color="var(--color-success)" />
+        <span>Live sync: {activeEndpoint.name}</span>
+      </div>
+
       <h1
         style={{
           fontSize: '20px',
           fontWeight: 800,
           textAlign: 'center',
-          marginBottom: '20px',
+          marginBottom: '16px',
         }}
       >
-        Fund your gift
+        {state.isUnderfunded ? 'Additional Payment Needed' : 'Fund your gift'}
       </h1>
+
+      {/* Underfunded / Partial Payment Alert Banner (PRD §8.3) */}
+      {state.isUnderfunded && (
+        <div
+          role="alert"
+          style={{
+            padding: '16px',
+            borderRadius: 'var(--radius-md)',
+            backgroundColor: '#FEF3C7',
+            border: '1.5px solid #F59E0B',
+            marginBottom: '20px',
+            color: '#92400E',
+            textAlign: 'left',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 800, fontSize: '15px', marginBottom: '6px' }}>
+            <AlertTriangle size={20} color="#D97706" />
+            <span>Partial Payment Received</span>
+          </div>
+          <p style={{ fontSize: '14px', margin: '4px 0 10px 0', lineHeight: 1.5 }}>
+            We received <strong>{receivedZec} ZEC</strong> but needed <strong>{totalZec} ZEC</strong>. Send the remaining <strong>{remainingZec} ZEC</strong> to this address.
+          </p>
+          <div style={{ fontSize: '12px', color: '#78350F' }}>
+            The wallet button and QR code below have been updated to request the remaining <strong>{remainingZec} ZEC</strong>.
+          </div>
+        </div>
+      )}
 
       {/* Breakdown Card (§5.1 F4, §10.4) */}
       <Card style={{ marginBottom: '20px' }}>
@@ -102,10 +162,24 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
           <span style={{ color: 'var(--color-secondary)' }}>Network fee (ZIP 317)</span>
           <span style={{ fontWeight: 600 }}>{feeZec} ZEC</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 4px 0', fontSize: '18px', fontWeight: 800 }}>
-          <span>Total to send</span>
-          <span style={{ color: '#0F172A' }}>{totalZec} ZEC</span>
-        </div>
+
+        {state.isUnderfunded ? (
+          <>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(15,23,42,0.06)', color: 'var(--color-secondary)' }}>
+              <span>Received so far</span>
+              <span style={{ fontWeight: 600, color: 'var(--color-ink)' }}>{receivedZec} ZEC</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 4px 0', fontSize: '18px', fontWeight: 800, color: '#B45309' }}>
+              <span>Remaining to send</span>
+              <span>{remainingZec} ZEC</span>
+            </div>
+          </>
+        ) : (
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 4px 0', fontSize: '18px', fontWeight: 800 }}>
+            <span>Total to send</span>
+            <span style={{ color: '#0F172A' }}>{totalZec} ZEC</span>
+          </div>
+        )}
       </Card>
 
       {/* Reassurance & Live Status Card (§7.4 Evaluation Gulf) */}
@@ -121,7 +195,9 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '8px' }}>
           <Clock size={18} className="animate-pulse" style={{ color: '#92400E' }} />
           <span style={{ fontWeight: 700, fontSize: '15px' }}>
-            {state.confirmations === 0
+            {state.isUnderfunded
+              ? `Partial payment seen · Awaiting remaining ${remainingZec} ZEC`
+              : state.confirmations === 0
               ? 'Waiting for your payment…'
               : `Payment seen · ${state.confirmations} of 3 confirmations`}
           </span>
@@ -140,8 +216,10 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
           <div
             style={{
               height: '100%',
-              backgroundColor: 'var(--color-action)',
-              width: `${(state.confirmations / 3) * 100}%`,
+              backgroundColor: state.isUnderfunded ? '#F59E0B' : 'var(--color-action)',
+              width: state.isUnderfunded
+                ? `${Math.min(95, Math.max(15, (state.receivedZat / totalZat) * 100))}%`
+                : `${(state.confirmations / 3) * 100}%`,
               transition: 'width 300ms ease',
             }}
           />
@@ -158,7 +236,11 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
         {/* Primary Wallet Action */}
         <Button variant="primary" onClick={handleOpenWallet}>
           <ExternalLink size={18} />
-          <span>Open my Zcash wallet</span>
+          <span>
+            {state.isUnderfunded
+              ? `Open wallet to send remaining ${remainingZec} ZEC`
+              : 'Open my Zcash wallet'}
+          </span>
         </Button>
 
         {/* Fallback Warning if zcash: handler was not found */}
@@ -180,23 +262,24 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
                 type="button"
                 onClick={() => setShowWalletModal(true)}
                 style={{
-                  background: '#92400E',
-                  color: '#FFFFFF',
+                  background: 'none',
                   border: 'none',
-                  padding: '6px 12px',
-                  borderRadius: '6px',
-                  fontWeight: 600,
+                  color: '#92400E',
+                  textDecoration: 'underline',
+                  fontWeight: 700,
                   fontSize: '12px',
                   cursor: 'pointer',
+                  padding: 0,
                 }}
               >
-                Get a Zcash Wallet
+                Choose a wallet
               </button>
+              <span>•</span>
               <button
                 type="button"
                 onClick={handleCopyAddress}
                 style={{
-                  background: 'transparent',
+                  background: 'none',
                   color: '#92400E',
                   border: '1px solid #92400E',
                   padding: '6px 12px',
@@ -229,7 +312,7 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
             <QrView
               value={state.fundingUri}
               size={190}
-              label={`${totalZec} ZEC to ${gift.depositAddress.slice(0, 16)}...`}
+              label={`${state.isUnderfunded ? remainingZec : totalZec} ZEC to ${gift.depositAddress.slice(0, 16)}...`}
             />
 
             <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
@@ -268,31 +351,41 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
       <div
         style={{
           marginTop: '16px',
-          padding: '12px',
+          padding: '16px',
           borderRadius: 'var(--radius-md)',
           backgroundColor: 'rgba(15, 23, 42, 0.04)',
           border: '1px dashed rgba(15, 23, 42, 0.15)',
           textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
         }}
       >
         <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           Testing / Prototype Mode
         </span>
-        <p style={{ fontSize: '12px', color: 'var(--color-secondary)', margin: '4px 0 10px 0' }}>
-          Want to test the full gift lifecycle without real ZEC?
+        <p style={{ fontSize: '12px', color: 'var(--color-secondary)', margin: '0 0 6px 0' }}>
+          Test the payment lifecycle and edge cases without real ZEC:
         </p>
+
         <Button
-          variant="secondary"
-          onClick={async () => {
-            // Trigger confirmation and transition state to READY
-            gift.state = 'READY';
-            gift.confirmations = 3;
-            await StorageService.saveGift(gift);
-            onPaymentConfirmed(gift);
+          variant="primary"
+          onClick={() => {
+            viewModel.simulateFullPayment(() => onPaymentConfirmed(gift));
           }}
         >
           <PlayCircle size={16} />
-          <span>Simulate Payment & Jump to Ready (Test)</span>
+          <span>Simulate Full Payment & Jump to Ready (Test)</span>
+        </Button>
+
+        <Button
+          variant="secondary"
+          onClick={() => {
+            viewModel.simulateUnderpayment();
+          }}
+        >
+          <AlertTriangle size={16} />
+          <span>Simulate Partial Payment (Underfunded Test)</span>
         </Button>
       </div>
 
@@ -341,12 +434,24 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
                 rel="noopener noreferrer"
                 style={{ textDecoration: 'none' }}
               >
-                <div style={walletOptionStyle}>
+                <div
+                  style={{
+                    padding: '12px',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1.5px solid rgba(15, 23, 42, 0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    color: 'var(--color-ink)',
+                  }}
+                >
                   <div>
-                    <strong style={{ fontSize: '14px', color: '#0F172A' }}>1. Zashi (Recommended)</strong>
-                    <div style={{ fontSize: '12px', color: 'var(--color-secondary)' }}>Official easy mobile wallet by Electric Coin Co.</div>
+                    <div style={{ fontWeight: 700, fontSize: '14px' }}>Zashi (Recommended)</div>
+                    <div style={{ fontSize: '12px', color: 'var(--color-secondary)' }}>
+                      By Electric Coin Co. Simple, fast, official shielded wallet.
+                    </div>
                   </div>
-                  <Download size={16} style={{ color: 'var(--color-info)' }} />
+                  <ExternalLink size={16} />
                 </div>
               </a>
 
@@ -356,12 +461,24 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
                 rel="noopener noreferrer"
                 style={{ textDecoration: 'none' }}
               >
-                <div style={walletOptionStyle}>
+                <div
+                  style={{
+                    padding: '12px',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1.5px solid rgba(15, 23, 42, 0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    color: 'var(--color-ink)',
+                  }}
+                >
                   <div>
-                    <strong style={{ fontSize: '14px', color: '#0F172A' }}>2. Zingo!</strong>
-                    <div style={{ fontSize: '12px', color: 'var(--color-secondary)' }}>Lightweight shielded wallet for Android and PC.</div>
+                    <div style={{ fontWeight: 700, fontSize: '14px' }}>Zingo!</div>
+                    <div style={{ fontSize: '12px', color: 'var(--color-secondary)' }}>
+                      Mobile wallet for Android and iOS. Lightweight and fast.
+                    </div>
                   </div>
-                  <Download size={16} style={{ color: 'var(--color-info)' }} />
+                  <ExternalLink size={16} />
                 </div>
               </a>
 
@@ -371,33 +488,34 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
                 rel="noopener noreferrer"
                 style={{ textDecoration: 'none' }}
               >
-                <div style={walletOptionStyle}>
+                <div
+                  style={{
+                    padding: '12px',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1.5px solid rgba(15, 23, 42, 0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    color: 'var(--color-ink)',
+                  }}
+                >
                   <div>
-                    <strong style={{ fontSize: '14px', color: '#0F172A' }}>3. YWallet</strong>
-                    <div style={{ fontSize: '12px', color: 'var(--color-secondary)' }}>Fast multi-platform wallet (iOS, Android, Windows, Mac).</div>
+                    <div style={{ fontWeight: 700, fontSize: '14px' }}>YWallet</div>
+                    <div style={{ fontSize: '12px', color: 'var(--color-secondary)' }}>
+                      Advanced high-speed wallet for mobile and desktop.
+                    </div>
                   </div>
-                  <Download size={16} style={{ color: 'var(--color-info)' }} />
+                  <ExternalLink size={16} />
                 </div>
               </a>
             </div>
 
             <Button variant="primary" onClick={() => setShowWalletModal(false)}>
-              I Have My Wallet Ready
+              Got it, thanks!
             </Button>
           </Card>
         </div>
       )}
     </div>
   );
-};
-
-const walletOptionStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: '12px',
-  borderRadius: 'var(--radius-md)',
-  border: '1px solid rgba(15, 23, 42, 0.12)',
-  backgroundColor: '#FFFFFF',
-  cursor: 'pointer',
 };

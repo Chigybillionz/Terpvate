@@ -6,6 +6,7 @@
 import { CryptoService } from './CryptoService';
 import { LinkCodec } from './LinkCodec';
 import { StorageService, GiftRecord } from './StorageService';
+import { LightwalletdService } from './LightwalletdService';
 import { GiftStateMachine } from '../events/stateMachine';
 import { workerBridge } from '../worker/workerBridge';
 import { zecToZatoshis } from '../zcash/units';
@@ -93,8 +94,43 @@ export class GiftService {
    */
   static startFundingWatcher(
     gift: GiftRecord,
-    onProgress: (confirmations: number, isReady: boolean) => void
+    onProgress: (progress: {
+      confirmations: number;
+      isReady: boolean;
+      isUnderfunded: boolean;
+      receivedZat: number;
+      remainingZat: number;
+    }) => void
   ): void {
+    const requiredZat = gift.amountZat + gift.claimFeeZat;
+
+    // Check live lightwalletd activity first
+    LightwalletdService.checkAddressActivity(gift.depositAddress, gift.birthdayHeight, requiredZat)
+      .then((liveAct) => {
+        if (liveAct.receivedZat > 0) {
+          GiftStateMachine.transition(gift, {
+            type: 'paymentSeen',
+            txid: liveAct.txid || `live_tx_${Date.now()}`,
+            receivedZat: liveAct.receivedZat,
+          });
+
+          const updated = GiftStateMachine.transition(gift, {
+            type: 'confirmationsChanged',
+            confirmations: liveAct.confirmations,
+          });
+
+          const remainingZat = Math.max(0, requiredZat - (updated.receivedZat || 0));
+          onProgress({
+            confirmations: updated.confirmations,
+            isReady: updated.state === 'READY',
+            isUnderfunded: updated.state === 'UNDERFUNDED',
+            receivedZat: updated.receivedZat || 0,
+            remainingZat,
+          });
+        }
+      })
+      .catch(() => {});
+
     workerBridge.watchConfirmations(
       gift.depositAddress,
       3, // 3 confirmations required (§0 #3, §13.2 #4)
@@ -111,8 +147,16 @@ export class GiftService {
           confirmations: res.confirmations,
         });
 
-        onProgress(updated.confirmations, updated.state === 'READY');
-      }
+        const remainingZat = Math.max(0, requiredZat - (updated.receivedZat || 0));
+        onProgress({
+          confirmations: updated.confirmations,
+          isReady: updated.state === 'READY',
+          isUnderfunded: updated.state === 'UNDERFUNDED',
+          receivedZat: updated.receivedZat || 0,
+          remainingZat,
+        });
+      },
+      requiredZat
     );
   }
 

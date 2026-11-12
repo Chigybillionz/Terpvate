@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { ClaimViewModel, ClaimState } from '../viewmodels/ClaimVM';
-import { CheckCircle2, ShieldCheck, AlertCircle, ArrowLeft, Lock, HelpCircle } from 'lucide-react';
+import { CheckCircle2, ShieldCheck, AlertCircle, ArrowLeft, Lock, HelpCircle, Clock, AlertTriangle } from 'lucide-react';
 
 interface ClaimScreenProps {
   fragment: string;
@@ -136,14 +136,41 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
           <div style={{ fontSize: '40px', fontWeight: 800, color: '#0F172A', margin: '16px 0' }}>
             {state.isVerifying ? (
               <span style={{ fontSize: '24px', color: 'var(--color-secondary)' }}>checking…</span>
+            ) : !state.isVerified ? (
+              <span style={{ fontSize: '22px', color: 'var(--color-error)' }}>Unverified</span>
             ) : (
               <span>{viewModel.getDisplayZec()} ZEC</span>
             )}
           </div>
 
-          <div style={{ fontSize: '13px', color: state.isVerified ? 'var(--color-success)' : 'var(--color-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-            <ShieldCheck size={16} />
-            <span>{state.isVerified ? 'Verified on Zcash blockchain' : 'Verifying on the Zcash blockchain…'}</span>
+          <div
+            style={{
+              fontSize: '13px',
+              color: state.isVerified
+                ? 'var(--color-success)'
+                : state.isVerifying
+                ? 'var(--color-secondary)'
+                : 'var(--color-error)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+            }}
+          >
+            {state.isVerified ? (
+              <ShieldCheck size={16} />
+            ) : state.isVerifying ? (
+              <Clock size={16} className="animate-pulse" />
+            ) : (
+              <AlertTriangle size={16} />
+            )}
+            <span>
+              {state.isVerifying
+                ? 'Verifying note on Zcash blockchain…'
+                : state.isVerified
+                ? 'Verified on Zcash blockchain'
+                : state.verificationError || 'No verified funds found on the blockchain'}
+            </span>
           </div>
         </Card>
 
@@ -183,7 +210,11 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
         {/* Claim Action Button (Norman Stage 2/3 §7.3) */}
         <Button
           variant="primary"
-          disabled={state.isVerifying || (state.isPasscodeProtected && !state.unwrappedSecretHex)}
+          disabled={
+            state.isVerifying ||
+            !state.isVerified ||
+            (state.isPasscodeProtected && !state.unwrappedSecretHex)
+          }
           onClick={() => setSubStep('address')}
         >
           Claim Gift

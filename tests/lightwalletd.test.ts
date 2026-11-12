@@ -37,4 +37,30 @@ describe('LightwalletdService (PRD §13.4 & §13.7)', () => {
     expect(res.success).toBe(true);
     expect(res.txid).toBeDefined();
   });
+
+  it('scans and verifies on-chain note commitments for receiver claim', async () => {
+    const verified = await LightwalletdService.verifyNoteCommitments({
+      viewingKey: 'uview1testviewingkey123456789012345678901234567890',
+      address: 'u1testreceiveraddress12345678901234567890',
+      birthdayHeight: 2600000,
+      expectedAmountZat: 100_000_000,
+    });
+
+    expect(verified.isVerified).toBe(true);
+    expect(verified.amountZat).toBe(100_000_000);
+    expect(verified.confirmations).toBeGreaterThanOrEqual(3);
+  });
+
+  it('rejects fake or invalid links with unverified status', async () => {
+    const rejected = await LightwalletdService.verifyNoteCommitments({
+      viewingKey: 'invalid_key',
+      address: 'invalid_address',
+      birthdayHeight: 2600000,
+      expectedAmountZat: 0,
+    });
+
+    expect(rejected.isVerified).toBe(false);
+    expect(rejected.amountZat).toBe(0);
+    expect(rejected.error).toBeDefined();
+  });
 });

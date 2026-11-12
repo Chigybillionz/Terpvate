@@ -385,7 +385,7 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
           }}
         >
           <AlertTriangle size={16} />
-          <span>Simulate Partial Payment (Underfunded Test)</span>
+          <span>Simulate Underpayment (e.g. received 0.9 ZEC of 1.0001 ZEC)</span>
         </Button>
       </div>
 

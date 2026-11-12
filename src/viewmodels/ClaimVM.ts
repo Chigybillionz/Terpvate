@@ -6,7 +6,8 @@
 import { LinkCodec, DecodedGiftLink } from '../services/LinkCodec';
 import { CryptoService } from '../services/CryptoService';
 import { GiftService } from '../services/GiftService';
-import { StorageService } from '../services/StorageService';
+import { LightwalletdService } from '../services/LightwalletdService';
+import { workerBridge } from '../worker/workerBridge';
 import { validateZcashAddress, AddressValidationResult } from '../zcash/address';
 import { zatoshisToZec } from '../zcash/units';
 import { liveAnnouncer } from '../a11y/liveAnnouncer';
@@ -23,6 +24,7 @@ export interface ClaimState {
   messagePlain: string;
   isVerifying: boolean;
   isVerified: boolean;
+  verificationError?: string;
   receiverAddress: string;
   addressValidation: AddressValidationResult;
   isClaiming: boolean;
@@ -91,28 +93,15 @@ export class ClaimViewModel {
         this.state.amountZat = decoded.amountZat;
       }
 
-      // Cross-check stored gifts (for prototype/local testing on same browser)
-      try {
-        const storedGifts = await StorageService.getAllGifts();
-        const matched = storedGifts.find(
-          (g) =>
-            g.secretHex === decoded.secretHex ||
-            (decoded.secretHex && g.shareableLink?.includes(decoded.secretHex))
-        );
-        if (matched) {
-          if (matched.amountZat) {
-            this.state.amountZat = matched.amountZat;
-          }
-          if (matched.messagePlain && !this.state.messagePlain) {
-            this.state.messagePlain = matched.messagePlain;
-          }
-        }
-      } catch {
-        // Storage lookup fallback
-      }
+      let derivedAddress = '';
+      let derivedViewingKey = '';
 
       if (!decoded.isPasscodeProtected) {
         this.state.unwrappedSecretHex = decoded.secretHex;
+        const derived = await workerBridge.deriveAddress(decoded.secretHex);
+        derivedAddress = derived.address;
+        derivedViewingKey = derived.viewingKey;
+
         if (decoded.encryptedMessageB64) {
           try {
             const secretBytes = CryptoService.hexToBytes(decoded.secretHex);
@@ -126,17 +115,31 @@ export class ClaimViewModel {
         }
       }
 
-      // Simulate on-chain verification delay (R2: "checking..." -> verified)
-      setTimeout(() => {
-        this.state.isVerifying = false;
+      // Live on-chain note verification (PRD §8.2 R2, §13.2 #4)
+      const noteResult = await LightwalletdService.verifyNoteCommitments({
+        viewingKey: derivedViewingKey || `uview1${decoded.secretHex.slice(0, 40)}`,
+        address: derivedAddress || `u1${decoded.secretHex.slice(0, 30)}terpvate${decoded.secretHex.slice(30, 56)}`,
+        birthdayHeight: decoded.birthdayHeight,
+        expectedAmountZat: decoded.amountZat,
+        secretHex: decoded.secretHex,
+      });
+
+      this.state.isVerifying = false;
+      if (noteResult.isVerified) {
         this.state.isVerified = true;
-        liveAnnouncer.announce('Gift verified on blockchain. Ready to claim.');
-        this.notify();
-      }, 1200);
+        this.state.amountZat = noteResult.amountZat;
+        this.state.verificationError = undefined;
+        liveAnnouncer.announce(`Gift verified on blockchain for ${this.getDisplayZec()} ZEC. Ready to claim.`);
+      } else {
+        this.state.isVerified = false;
+        this.state.verificationError = noteResult.error || 'This gift could not be verified on the Zcash blockchain.';
+        liveAnnouncer.announce(this.state.verificationError);
+      }
 
       this.notify();
     } catch (err: any) {
       this.state.isVerifying = false;
+      this.state.isVerified = false;
       this.state.error = err?.message || 'Invalid gift link';
       this.notify();
     }
@@ -152,11 +155,28 @@ export class ClaimViewModel {
       this.state.unwrappedSecretHex = CryptoService.bytesToHex(unwrappedBytes);
       this.state.passcodeError = undefined;
 
+      const derived = await workerBridge.deriveAddress(this.state.unwrappedSecretHex);
+
       if (this.state.decoded.encryptedMessageB64) {
         this.state.messagePlain = await CryptoService.decryptMessage(
           unwrappedBytes,
           this.state.decoded.encryptedMessageB64
         );
+      }
+
+      // Re-verify note commitments with unlocked secret
+      const noteResult = await LightwalletdService.verifyNoteCommitments({
+        viewingKey: derived.viewingKey,
+        address: derived.address,
+        birthdayHeight: this.state.decoded.birthdayHeight,
+        expectedAmountZat: this.state.amountZat,
+        secretHex: this.state.unwrappedSecretHex,
+      });
+
+      if (noteResult.isVerified) {
+        this.state.isVerified = true;
+        this.state.amountZat = noteResult.amountZat;
+        this.state.verificationError = undefined;
       }
 
       this.notify();

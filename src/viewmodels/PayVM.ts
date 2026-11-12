@@ -111,10 +111,16 @@ export class PayViewModel {
    */
   async simulateUnderpayment(customReceivedZat?: number): Promise<void> {
     const requiredZat = this.state.gift.amountZat + this.state.gift.claimFeeZat;
-    // Default to ~90% of total if not specified (e.g. 0.9 ZEC if 1 ZEC + 0.0001 fee)
-    const partialZat = customReceivedZat !== undefined
-      ? customReceivedZat
-      : Math.round(requiredZat * 0.9);
+    let partialZat: number;
+
+    if (customReceivedZat !== undefined) {
+      partialZat = customReceivedZat;
+    } else if (this.state.gift.amountZat === 100_000_000) {
+      // For 1 ZEC gift (required 1.0001 ZEC), simulate exact 0.9 ZEC received
+      partialZat = 90_000_000;
+    } else {
+      partialZat = Math.round(requiredZat * 0.9);
+    }
 
     const remainingZat = Math.max(0, requiredZat - partialZat);
 

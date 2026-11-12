@@ -3,6 +3,7 @@ import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { StepBar } from '../ui/StepBar';
 import { SendViewModel, SendState } from '../viewmodels/SendVM';
+import { PriceService } from '../services/PriceService';
 import { GiftRecord } from '../services/StorageService';
 import { ArrowLeft } from 'lucide-react';
 
@@ -17,20 +18,14 @@ export const PreviewScreen: React.FC<PreviewScreenProps> = ({
   onBackToEdit,
   onProceedToPay,
 }) => {
-  const [state, setState] = React.useState<SendState>({
+  const [state, setState] = React.useState<SendState>(() => ({
     zecAmount: '0.05',
-    fiatEstimate: {
-      fiatAmount: '0',
-      currency: 'NGN',
-      displayString: '',
-      formattedRate: '',
-      isFallback: false,
-    },
+    fiatEstimate: PriceService.estimateNgn('0.05'),
     message: '',
     passcode: '',
     isPasscodeEnabled: false,
     isCreating: false,
-  });
+  }));
 
   React.useEffect(() => {
     return viewModel.subscribe(setState);

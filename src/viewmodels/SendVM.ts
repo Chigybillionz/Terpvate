@@ -31,6 +31,15 @@ export class SendViewModel {
       isPasscodeEnabled: false,
       isCreating: false,
     };
+
+    // Auto-update fiat estimate when live rates arrive
+    PriceService.subscribe(() => {
+      this.state.fiatEstimate = PriceService.estimateNgn(this.state.zecAmount);
+      this.notify();
+    });
+
+    // Trigger non-blocking refresh
+    PriceService.refreshRate().catch(() => {});
   }
 
   subscribe(listener: (state: SendState) => void): () => void {

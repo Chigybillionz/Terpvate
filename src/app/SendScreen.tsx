@@ -4,6 +4,7 @@ import { Button } from '../ui/Button';
 import { Keypad } from '../ui/Keypad';
 import { StepBar } from '../ui/StepBar';
 import { SendViewModel, SendState } from '../viewmodels/SendVM';
+import { PriceService } from '../services/PriceService';
 import { Lock } from 'lucide-react';
 
 interface SendScreenProps {
@@ -14,20 +15,14 @@ interface SendScreenProps {
 const TEMPLATES = ['Happy Birthday! 🎉', 'Thank you so much! 🙏', 'Enjoy your lunch! ☕', 'Great work! 🚀'];
 
 export const SendScreen: React.FC<SendScreenProps> = ({ viewModel, onContinueToPreview }) => {
-  const [state, setState] = useState<SendState>({
+  const [state, setState] = useState<SendState>(() => ({
     zecAmount: '0.05',
-    fiatEstimate: {
-      fiatAmount: '0',
-      currency: 'NGN',
-      displayString: 'about ₦0',
-      formattedRate: '',
-      isFallback: false,
-    },
+    fiatEstimate: PriceService.estimateNgn('0.05'),
     message: '',
     passcode: '',
     isPasscodeEnabled: false,
     isCreating: false,
-  });
+  }));
 
   React.useEffect(() => {
     return viewModel.subscribe(setState);

@@ -21,9 +21,9 @@ export interface FiatEstimate {
 export type PriceListener = (rates: { zecNgn: number; zecUsd: number }) => void;
 
 export class PriceService {
-  // Safe default fallback rates if network is offline on first load
-  private static FALLBACK_ZEC_USD = 45.0;
-  private static FALLBACK_ZEC_NGN = 67500.0;
+  // Configured market rate: 1 ZEC = ₦1,782,520
+  private static FALLBACK_ZEC_USD = 1080.0;
+  private static FALLBACK_ZEC_NGN = 1782520.0;
 
   private static cachedRateZecNgn = PriceService.FALLBACK_ZEC_NGN;
   private static cachedRateZecUsd = PriceService.FALLBACK_ZEC_USD;
@@ -33,7 +33,7 @@ export class PriceService {
 
   private static listeners = new Set<PriceListener>();
 
-  private static CACHE_KEY = 'terpvate_fiat_rates_v1';
+  private static CACHE_KEY = 'terpvate_fiat_rates_v2';
   private static CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
   static {

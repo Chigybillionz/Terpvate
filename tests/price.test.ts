@@ -2,11 +2,11 @@ import { describe, it, expect, vi } from 'vitest';
 import { PriceService } from '../src/services/PriceService';
 
 describe('PriceService (PRD §2 A8, §5.1 F1, §13.4)', () => {
-  it('estimates NGN value with rate timestamp', () => {
+  it('estimates NGN value with rate timestamp based on 1 ZEC = ₦1,782,520', () => {
     const est = PriceService.estimateNgn('0.05');
     expect(est.currency).toBe('NGN');
-    expect(parseInt(est.fiatAmount, 10)).toBeGreaterThan(0);
-    expect(est.displayString).toContain('about ₦');
+    expect(parseInt(est.fiatAmount, 10)).toBe(89126); // 0.05 * 1,782,520 = 89,126
+    expect(est.displayString).toContain('about ₦89,126');
     expect(est.rateTime).toBeDefined();
   });
 

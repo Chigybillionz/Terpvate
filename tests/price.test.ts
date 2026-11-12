@@ -64,3 +64,4 @@ describe('PriceService (PRD §2 A8, §5.1 F1, §13.4)', () => {
     vi.unstubAllGlobals();
   });
 });
+

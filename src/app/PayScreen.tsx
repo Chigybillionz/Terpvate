@@ -6,7 +6,19 @@ import { QrView } from '../ui/QrView';
 import { PayViewModel, PayState } from '../viewmodels/PayVM';
 import { GiftRecord } from '../services/StorageService';
 import { zatoshisToZec } from '../zcash/units';
-import { ExternalLink, QrCode, Clock, ShieldCheck } from 'lucide-react';
+import { liveAnnouncer } from '../a11y/liveAnnouncer';
+import {
+  ExternalLink,
+  QrCode,
+  Clock,
+  ShieldCheck,
+  Copy,
+  Check,
+  HelpCircle,
+  PlayCircle,
+  X,
+  Download,
+} from 'lucide-react';
 
 interface PayScreenProps {
   gift: GiftRecord;
@@ -24,7 +36,11 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
     isWatching: false,
     timeRemainingSeconds: 240,
   }));
+
   const [showQr, setShowQr] = useState(false);
+  const [showWalletModal, setShowWalletModal] = useState(false);
+  const [copiedAddress, setCopiedAddress] = useState(false);
+  const [walletAttemptFailed, setWalletAttemptFailed] = useState(false);
 
   useEffect(() => {
     const unsub = viewModel.subscribe(setState);
@@ -37,6 +53,29 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
   const giftZec = zatoshisToZec(gift.amountZat);
   const feeZec = zatoshisToZec(gift.claimFeeZat);
   const totalZec = zatoshisToZec(gift.amountZat + gift.claimFeeZat);
+
+  const handleOpenWallet = () => {
+    setWalletAttemptFailed(false);
+
+    // Attempt to invoke system handler for zcash: URI
+    window.location.href = state.fundingUri;
+
+    // Fallback: If after 1.5 seconds the tab is still focused, the OS likely had no app for zcash:
+    setTimeout(() => {
+      if (document.hasFocus()) {
+        setWalletAttemptFailed(true);
+      }
+    }, 1500);
+  };
+
+  const handleCopyAddress = async () => {
+    try {
+      await navigator.clipboard.writeText(gift.depositAddress);
+      setCopiedAddress(true);
+      liveAnnouncer.announce('Deposit address copied to clipboard');
+      setTimeout(() => setCopiedAddress(false), 2000);
+    } catch {}
+  };
 
   return (
     <div style={{ maxWidth: '440px', margin: '0 auto', width: '100%' }}>
@@ -69,7 +108,7 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
         </div>
       </Card>
 
-      {/* Reassurance & Live Status Card (§7.4 Evaluation Gulf & POS error lesson) */}
+      {/* Reassurance & Live Status Card (§7.4 Evaluation Gulf) */}
       <Card
         style={{
           textAlign: 'center',
@@ -114,18 +153,66 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
         </p>
       </Card>
 
-      {/* Payment Options (§13.1 ZIP 321) */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
-        <a
-          href={state.fundingUri}
-          style={{ textDecoration: 'none' }}
-        >
-          <Button variant="primary">
-            <ExternalLink size={18} />
-            <span>Open my Zcash wallet</span>
-          </Button>
-        </a>
+      {/* Payment Actions */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+        {/* Primary Wallet Action */}
+        <Button variant="primary" onClick={handleOpenWallet}>
+          <ExternalLink size={18} />
+          <span>Open my Zcash wallet</span>
+        </Button>
 
+        {/* Fallback Warning if zcash: handler was not found */}
+        {walletAttemptFailed && (
+          <div
+            style={{
+              padding: '12px',
+              borderRadius: 'var(--radius-md)',
+              backgroundColor: '#FEF3C7',
+              border: '1px solid #FCD34D',
+              fontSize: '13px',
+              color: '#92400E',
+              lineHeight: 1.4,
+            }}
+          >
+            <strong>No wallet opened?</strong> Your browser may not have a Zcash app installed yet.
+            <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+              <button
+                type="button"
+                onClick={() => setShowWalletModal(true)}
+                style={{
+                  background: '#92400E',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  fontWeight: 600,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                }}
+              >
+                Get a Zcash Wallet
+              </button>
+              <button
+                type="button"
+                onClick={handleCopyAddress}
+                style={{
+                  background: 'transparent',
+                  color: '#92400E',
+                  border: '1px solid #92400E',
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  fontWeight: 600,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                }}
+              >
+                {copiedAddress ? 'Address Copied! ✓' : 'Copy Address'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Show QR Toggle */}
         <Button
           variant="secondary"
           onClick={() => setShowQr(!showQr)}
@@ -135,19 +222,179 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
         </Button>
 
         {showQr && (
-          <Card style={{ alignItems: 'center', textAlign: 'center', marginTop: '12px' }}>
+          <Card style={{ alignItems: 'center', textAlign: 'center', marginTop: '6px' }}>
             <p style={{ fontSize: '13px', color: 'var(--color-secondary)', marginBottom: '12px' }}>
               Scan with Zashi, Zingo, or YWallet
             </p>
             <QrView
               value={state.fundingUri}
               size={190}
-              label={`${totalZec} ZEC to ${state.gift.depositAddress.slice(0, 16)}...`}
+              label={`${totalZec} ZEC to ${gift.depositAddress.slice(0, 16)}...`}
             />
+
+            <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
+              <Button variant="secondary" fullWidth={false} onClick={handleCopyAddress}>
+                {copiedAddress ? <Check size={16} /> : <Copy size={16} />}
+                <span>{copiedAddress ? 'Copied' : 'Copy address'}</span>
+              </Button>
+            </div>
           </Card>
         )}
+
+        {/* Guided "Don't have a wallet?" Button */}
+        <div style={{ textAlign: 'center', marginTop: '4px' }}>
+          <button
+            type="button"
+            onClick={() => setShowWalletModal(true)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--color-info)',
+              fontSize: '13px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+          >
+            <HelpCircle size={15} />
+            <span>Don't have a Zcash wallet yet? Get one here</span>
+          </button>
+        </div>
       </div>
+
+      {/* Dev / Testing Quick Simulator (§16.2 Usability testing) */}
+      <div
+        style={{
+          marginTop: '16px',
+          padding: '12px',
+          borderRadius: 'var(--radius-md)',
+          backgroundColor: 'rgba(15, 23, 42, 0.04)',
+          border: '1px dashed rgba(15, 23, 42, 0.15)',
+          textAlign: 'center',
+        }}
+      >
+        <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          Testing / Prototype Mode
+        </span>
+        <p style={{ fontSize: '12px', color: 'var(--color-secondary)', margin: '4px 0 10px 0' }}>
+          Want to test the full gift lifecycle without real ZEC?
+        </p>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            // Trigger confirmation directly
+            onPaymentConfirmed(gift);
+          }}
+        >
+          <PlayCircle size={16} />
+          <span>Simulate Payment & Jump to Ready (Test)</span>
+        </Button>
+      </div>
+
+      {/* "Get a Wallet" Modal Dialog */}
+      {showWalletModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(15, 23, 42, 0.6)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '16px',
+            zIndex: 100,
+          }}
+        >
+          <Card style={{ maxWidth: '420px', width: '100%', padding: '24px', position: 'relative' }}>
+            <button
+              type="button"
+              onClick={() => setShowWalletModal(false)}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'var(--color-secondary)',
+              }}
+            >
+              <X size={20} />
+            </button>
+
+            <h3 style={{ fontSize: '18px', fontWeight: 800, marginBottom: '6px' }}>
+              Get a Zcash Shielded Wallet
+            </h3>
+            <p style={{ fontSize: '13px', color: 'var(--color-secondary)', marginBottom: '16px' }}>
+              Choose any of these free shielded wallets to hold and spend ZEC:
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+              <a
+                href="https://zashi.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none' }}
+              >
+                <div style={walletOptionStyle}>
+                  <div>
+                    <strong style={{ fontSize: '14px', color: '#0F172A' }}>1. Zashi (Recommended)</strong>
+                    <div style={{ fontSize: '12px', color: 'var(--color-secondary)' }}>Official easy mobile wallet by Electric Coin Co.</div>
+                  </div>
+                  <Download size={16} style={{ color: 'var(--color-info)' }} />
+                </div>
+              </a>
+
+              <a
+                href="https://zingo.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none' }}
+              >
+                <div style={walletOptionStyle}>
+                  <div>
+                    <strong style={{ fontSize: '14px', color: '#0F172A' }}>2. Zingo!</strong>
+                    <div style={{ fontSize: '12px', color: 'var(--color-secondary)' }}>Lightweight shielded wallet for Android and PC.</div>
+                  </div>
+                  <Download size={16} style={{ color: 'var(--color-info)' }} />
+                </div>
+              </a>
+
+              <a
+                href="https://ywallet.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none' }}
+              >
+                <div style={walletOptionStyle}>
+                  <div>
+                    <strong style={{ fontSize: '14px', color: '#0F172A' }}>3. YWallet</strong>
+                    <div style={{ fontSize: '12px', color: 'var(--color-secondary)' }}>Fast multi-platform wallet (iOS, Android, Windows, Mac).</div>
+                  </div>
+                  <Download size={16} style={{ color: 'var(--color-info)' }} />
+                </div>
+              </a>
+            </div>
+
+            <Button variant="primary" onClick={() => setShowWalletModal(false)}>
+              I Have My Wallet Ready
+            </Button>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };
 
+const walletOptionStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: '12px',
+  borderRadius: 'var(--radius-md)',
+  border: '1px solid rgba(15, 23, 42, 0.12)',
+  backgroundColor: '#FFFFFF',
+  cursor: 'pointer',
+};

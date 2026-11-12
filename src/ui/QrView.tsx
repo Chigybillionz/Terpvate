@@ -113,3 +113,4 @@ export const QrView: React.FC<QrViewProps> = ({
     </div>
   );
 };
+

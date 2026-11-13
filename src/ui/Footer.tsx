@@ -6,7 +6,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
-    <footer className="w-full mt-16 sm:mt-24 lg:mt-32 pt-10 pb-16 sm:pb-12 border-t border-white/10 backdrop-blur-xl">
+    <footer className="w-full mt-12 sm:mt-20 lg:mt-28 pt-8 pb-28 sm:pb-12 border-t border-white/10 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         {/* Navigation Links */}
         <div className="flex justify-center gap-6 sm:gap-10 flex-wrap mb-4">

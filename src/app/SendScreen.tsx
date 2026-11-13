@@ -13,8 +13,6 @@ interface SendScreenProps {
   onExploreWallets?: () => void;
 }
 
-const TEMPLATES = ['Happy Birthday! 🎉', 'Thank you so much! 🙏', 'Enjoy your lunch! ☕', 'Great work! 🚀'];
-
 export const SendScreen: React.FC<SendScreenProps> = ({
   viewModel,
   onContinueToPreview,
@@ -37,32 +35,31 @@ export const SendScreen: React.FC<SendScreenProps> = ({
   }, [viewModel]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 lg:py-12">
-      {/* Mobile-Only Scaled Introduction (Stacked Vertically §2) */}
-      <div className="flex lg:hidden flex-col items-center text-center mb-6 sm:mb-8">
-        <div className="liquid-glass inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold text-amber-300 mb-3 border border-amber-400/20 shadow-md shadow-amber-500/10">
-          <Shield size={13} className="text-amber-400" />
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-6 lg:py-8">
+      {/* Mobile-Only Clean Scaled Header (§2 & User Ergonomics) */}
+      <div className="flex lg:hidden flex-col items-center text-center mb-4 sm:mb-6">
+        <div className="liquid-glass inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold text-amber-300 mb-2 border border-amber-400/20 shadow-sm">
+          <Shield size={12} className="text-amber-400" />
           <span>Shielded Zcash Gifting</span>
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2 leading-snug">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-1 leading-snug">
           Give Freely.{' '}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-amber-200">
             Stay Truly Private.
           </span>
         </h1>
 
-        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-md mx-auto">
-          Create non-custodial, zero-knowledge gift links funded with shielded ZEC.
-          No accounts or KYC required.
+        <p className="text-xs text-slate-300 max-w-xs">
+          Zero-knowledge gift links funded with shielded ZEC.
         </p>
       </div>
 
       {/* Main Two-Column Desktop Grid / Single-Column Mobile Grid (§1) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
         
         {/* Left Column: Full Hero Introduction (Desktop Only §1) */}
-        <div className="hidden lg:flex lg:col-span-7 xl:col-span-7 flex-col items-start text-left">
+        <div className="hidden lg:flex lg:col-span-7 xl:col-span-7 flex-col items-start text-left pt-2">
           {/* Glowing Shielded Badge */}
           <div className="liquid-glass inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold text-amber-300 mb-6 border border-amber-400/25 shadow-lg shadow-amber-500/10">
             <Shield size={14} className="text-amber-400" />
@@ -122,6 +119,18 @@ export const SendScreen: React.FC<SendScreenProps> = ({
               </button>
             )}
           </div>
+
+          {/* Security & Protocol Highlights below CTAs */}
+          <div className="mt-10 pt-8 border-t border-white/10 flex items-center gap-8 text-xs text-slate-400">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span>Shielded Orchard & Sapling Pools</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-amber-400" />
+              <span>100% Client-Side Encryption</span>
+            </div>
+          </div>
         </div>
 
         {/* Right Column: Gift Creation Card (§4) */}
@@ -180,23 +189,9 @@ export const SendScreen: React.FC<SendScreenProps> = ({
                       rows={2}
                       value={state.message}
                       onChange={(e) => viewModel.setMessage(e.target.value)}
-                      placeholder="Happy Birthday! 🎉"
+                      placeholder="Write a private note (optional)..."
                       className="liquid-glass w-full p-2.5 rounded-xl text-white text-xs placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-action transition-all resize-none border border-white/10"
                     />
-
-                    {/* Quick Exemplar Templates */}
-                    <div className="flex gap-1.5 flex-wrap mt-2">
-                      {TEMPLATES.map((tmpl) => (
-                        <button
-                          key={tmpl}
-                          type="button"
-                          onClick={() => viewModel.setMessage(tmpl)}
-                          className="liquid-glass text-[11px] font-medium px-2.5 py-1 rounded-full text-white/75 hover:text-white hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
-                        >
-                          {tmpl}
-                        </button>
-                      ))}
-                    </div>
                   </div>
 
                   {/* Passcode Protection Toggle */}

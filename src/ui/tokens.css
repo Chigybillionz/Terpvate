@@ -23,10 +23,14 @@
 }
 
 [data-theme="light"] .liquid-glass {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 8px 24px -4px rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 8px 30px -4px rgba(15, 23, 42, 0.12);
+}
+
+[data-theme="light"] .liquid-glass::before {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.15) 0%, rgba(15, 23, 42, 0.05) 50%, rgba(15, 23, 42, 0.15) 100%);
 }
 
 .liquid-glass::before {
@@ -74,38 +78,46 @@
 /* Tip Visual Design System & Design Tokens (PRD §10, §11) */
 
 :root {
-  /* 60-30-10 Palette - Light Theme */
-  --color-canvas: #F8FAFC;         /* 60% neutral canvas */
-  --color-card: #FFFFFF;           /* 30% card surface */
-  --color-card-elevated: #FFFFFF;
-  --color-card-gold-bg: #FFFBEB;
-  --color-card-border: rgba(15, 23, 42, 0.09);
-  --color-border: rgba(15, 23, 42, 0.15);
-  --color-border-subtle: rgba(15, 23, 42, 0.08);
-  --color-subtle-bg: rgba(15, 23, 42, 0.04);
-  --color-input-bg: #FFFFFF;
-  --color-input-border: rgba(15, 23, 42, 0.2);
-  --color-chip-bg: rgba(15, 23, 42, 0.05);
-  --color-chip-text: #0F172A;
+  /* Terpvate Web3 Fintech Design Tokens - Primary Dark Theme Foundation */
+  --color-canvas: #070B14;         /* Deep rich dark background */
+  --color-card: #0F172A;           /* Elevated crisp card surface */
+  --color-card-elevated: #162032;
+  --color-card-gold-bg: rgba(244, 183, 40, 0.12);
+  --color-card-border: rgba(255, 255, 255, 0.12);
+  --color-border: rgba(255, 255, 255, 0.16);
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-subtle-bg: rgba(255, 255, 255, 0.05);
+  --color-input-bg: #0B101D;
+  --color-input-border: rgba(255, 255, 255, 0.20);
+  --color-chip-bg: rgba(255, 255, 255, 0.08);
+  --color-chip-text: #FFFFFF;
 
-  --color-ink: #0F172A;            /* Primary text & outlines (17.85:1 contrast) */
-  --color-secondary: #475569;      /* Secondary text (7.58:1 contrast) */
-  --color-action: #F4B728;         /* 10% Gold accent for primary actions */
-  --color-action-hover: #e5a81e;
-  --color-action-active: #cfa01b;
-  --color-outline: #0F172A;        /* 2px ink outline for 3:1 WCAG boundary compliance */
+  --color-ink: #FFFFFF;            /* Pure crisp white for sharp text readability */
+  --color-secondary: #94A3B8;      /* Bright, legible slate-silver text (not dull!) */
+  --color-action: #F5BA31;         /* Bright vivid gold */
+  --color-action-hover: #fbbf24;
+  --color-action-active: #d97706;
+  --color-outline: #F5BA31;
 
-  /* Semantic Feedback */
-  --color-info: #1D4ED8;           /* Links and informative accents (6.70:1) */
-  --color-success: #15803D;        /* Confirmed / Claimed states (5.02:1) */
-  --color-success-bg: #DCFCE7;
-  --color-error: #B91C1C;          /* Errors / Rejections (6.47:1) */
-  --color-error-bg: #FEE2E2;
-  --color-warning: #92400E;        /* Warnings / Pending states (7.09:1) */
-  --color-warning-bg: #FEF3C7;
+  /* Semantic Feedback in Dark Mode */
+  --color-info: #60A5FA;
+  --color-success: #34D399;
+  --color-success-bg: rgba(52, 211, 153, 0.18);
+  --color-error: #F87171;
+  --color-error-bg: rgba(248, 113, 113, 0.18);
+  --color-warning: #FBBF24;
+  --color-warning-bg: rgba(251, 191, 36, 0.18);
+
+  /* Layout Architecture Design Tokens */
+  --container-max: 1200px;
+  --container-narrow: 560px;
+  --container-card: 440px;
+  --nav-height-desktop: 76px;
+  --nav-height-mobile: 60px;
+  --bottom-nav-height: 64px;
 
   /* Typography & Layout */
-  --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-system: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* Spacing Grid (8px base) */
@@ -117,47 +129,80 @@
   --space-6: 24px;
   --space-8: 32px;
   --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
 
   /* Target Dimensions (Fitts's Law §11) */
   --target-min-height: 48px;       /* 48px min touch target (beats WCAG 24px) */
-  --keypad-min-height: 56px;       /* 56px keypad buttons */
+  --keypad-min-height: 52px;       /* 52px keypad buttons */
   --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 18px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05);
-  --shadow-card: 0 4px 6px -1px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.05);
-  --shadow-pressed: inset 0 2px 4px 0 rgb(15 23 42 / 0.15);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+  --shadow-card: 0 4px 12px -2px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-pressed: inset 0 2px 4px 0 rgb(0 0 0 / 0.4);
 
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+[data-theme="light"] {
+  /* Light Theme Variant */
+  --color-canvas: #F8FAFC;
+  --color-card: #FFFFFF;
+  --color-card-elevated: #FFFFFF;
+  --color-card-gold-bg: #FFFBEB;
+  --color-card-border: rgba(15, 23, 42, 0.09);
+  --color-border: rgba(15, 23, 42, 0.15);
+  --color-border-subtle: rgba(15, 23, 42, 0.08);
+  --color-subtle-bg: rgba(15, 23, 42, 0.04);
+  --color-input-bg: #FFFFFF;
+  --color-input-border: rgba(15, 23, 42, 0.2);
+  --color-chip-bg: rgba(15, 23, 42, 0.05);
+  --color-chip-text: #0F172A;
+
+  --color-ink: #0F172A;
+  --color-secondary: #475569;
+  --color-action: #F4B728;
+  --color-action-hover: #e5a81e;
+  --color-action-active: #cfa01b;
+  --color-outline: #0F172A;
+
+  --color-info: #1D4ED8;
+  --color-success: #15803D;
+  --color-success-bg: #DCFCE7;
+  --color-error: #B91C1C;
+  --color-error-bg: #FEE2E2;
+  --color-warning: #92400E;
+  --color-warning-bg: #FEF3C7;
+}
+
 [data-theme="dark"] {
-  /* 60-30-10 Palette - High Contrast & Crisp Dark Theme */
-  --color-canvas: #0A0E17;         /* Deep rich dark background */
-  --color-card: #151D2A;           /* Elevated crisp card surface */
-  --color-card-elevated: #1C2638;
+  /* Dark Theme Variant */
+  --color-canvas: #070B14;
+  --color-card: #0F172A;
+  --color-card-elevated: #162032;
   --color-card-gold-bg: rgba(244, 183, 40, 0.12);
   --color-card-border: rgba(255, 255, 255, 0.12);
-  --color-border: rgba(255, 255, 255, 0.18);
-  --color-border-subtle: rgba(255, 255, 255, 0.1);
-  --color-subtle-bg: rgba(255, 255, 255, 0.06);
-  --color-input-bg: #0D131F;
-  --color-input-border: rgba(255, 255, 255, 0.24);
-  --color-chip-bg: rgba(255, 255, 255, 0.09);
+  --color-border: rgba(255, 255, 255, 0.16);
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-subtle-bg: rgba(255, 255, 255, 0.05);
+  --color-input-bg: #0B101D;
+  --color-input-border: rgba(255, 255, 255, 0.20);
+  --color-chip-bg: rgba(255, 255, 255, 0.08);
   --color-chip-text: #FFFFFF;
 
-  --color-ink: #FFFFFF;            /* Pure crisp white for sharp text readability */
-  --color-secondary: #CBD5E1;      /* Bright, legible slate-silver text (not dull!) */
-  --color-action: #F5BA31;         /* Bright vivid gold */
+  --color-ink: #FFFFFF;
+  --color-secondary: #94A3B8;
+  --color-action: #F5BA31;
   --color-action-hover: #fbbf24;
   --color-action-active: #d97706;
   --color-outline: #F5BA31;
 
-  /* Semantic Feedback in Dark Mode */
   --color-info: #60A5FA;
   --color-success: #34D399;
   --color-success-bg: rgba(52, 211, 153, 0.18);

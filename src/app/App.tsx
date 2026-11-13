@@ -159,7 +159,7 @@ const AppContent: React.FC = () => {
       <main
         id="main-content"
         tabIndex={-1}
-        className="flex-1 w-full flex flex-col items-center justify-center px-3 sm:px-6 py-6 pb-28 md:pb-14 outline-none"
+        className="flex-1 w-full flex flex-col items-center justify-start px-3 sm:px-6 lg:px-8 pt-6 sm:pt-10 lg:pt-14 pb-32 md:pb-16 outline-none"
       >
         {route === 'send' && (
           <SendScreen

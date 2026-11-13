@@ -93,12 +93,12 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 left-0 right-0 z-40 backdrop-blur-xl bg-slate-950/70 border-b border-white/10 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+      <header className="sticky top-0 left-0 right-0 z-40 backdrop-blur-xl bg-slate-950/80 border-b border-white/10 transition-colors">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between relative">
           {/* Left: Brand Logo */}
           <div
             onClick={() => handleNavClick('send')}
-            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none group"
+            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none group z-10"
           >
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl liquid-glass flex items-center justify-center text-action group-hover:scale-105 transition-transform shadow-md shadow-amber-500/10">
               <Infinity size={22} strokeWidth={2} />
@@ -113,25 +113,26 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Center: Liquid Glass Nav Pill (Desktop Only) */}
-          <nav className="hidden md:flex liquid-glass items-center gap-1.5 p-1.5 rounded-full shadow-lg">
+          {/* Center: True Mathematically Centered Nav Pill (Desktop Only) */}
+          <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 liquid-glass items-center gap-1 p-1.5 rounded-full shadow-lg border border-white/10 backdrop-blur-xl">
             {desktopNavLinks.map((link) => (
               <button
                 key={link.id}
                 type="button"
                 onClick={() => handleNavClick(link.id)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer ${
+                className={`flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer ${
                   link.active
-                    ? 'bg-action text-slate-950 shadow-md shadow-amber-500/20'
-                    : 'text-white/75 hover:text-white hover:bg-white/10'
+                    ? 'bg-action text-slate-950 shadow-md shadow-amber-500/25'
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
                 }`}
               >
-                {link.id === 'gifts' && <Gift size={15} />}
                 <span>{link.label}</span>
                 {Boolean(link.count && link.count > 0) && (
                   <span
-                    className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ml-0.5 ${
-                      link.active ? 'bg-slate-950/20 text-slate-950' : 'bg-action text-slate-950'
+                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-1.5 leading-none ${
+                      link.active
+                        ? 'bg-slate-950/20 text-slate-950'
+                        : 'bg-action/25 text-amber-300 border border-action/40'
                     }`}
                   >
                     {link.count}
@@ -142,7 +143,7 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           {/* Right: Network Pill, Theme Toggle, Mobile Menu Trigger */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 z-10">
             {/* Network Switcher Button */}
             <button
               type="button"

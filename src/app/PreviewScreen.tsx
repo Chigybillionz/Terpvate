@@ -72,8 +72,8 @@ export const PreviewScreen: React.FC<PreviewScreenProps> = ({
             style={{
               fontSize: '18px',
               fontStyle: 'italic',
-              fontWeight: 600,
-              color: '#0F172A',
+              fontWeight: 700,
+              color: 'var(--color-ink)',
               marginBottom: '16px',
             }}
           >
@@ -81,11 +81,11 @@ export const PreviewScreen: React.FC<PreviewScreenProps> = ({
           </p>
         )}
 
-        <div style={{ fontSize: '42px', fontWeight: 800, color: '#0F172A', margin: '12px 0' }}>
-          {state.zecAmount} <span style={{ fontSize: '24px' }}>ZEC</span>
+        <div style={{ fontSize: '42px', fontWeight: 800, color: 'var(--color-ink)', margin: '12px 0' }}>
+          {state.zecAmount} <span style={{ fontSize: '24px', color: 'var(--color-action)' }}>ZEC</span>
         </div>
 
-        <div style={{ fontSize: '14px', color: '#92400E', fontWeight: 600 }}>
+        <div style={{ fontSize: '15px', color: 'var(--color-warning)', fontWeight: 700 }}>
           {state.fiatEstimate.displayString}
         </div>
       </Card>

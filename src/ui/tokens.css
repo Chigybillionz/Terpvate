@@ -1,9 +1,20 @@
 /* Tip Visual Design System & Design Tokens (PRD §10, §11) */
 
 :root {
-  /* 60-30-10 Palette */
+  /* 60-30-10 Palette - Light Theme */
   --color-canvas: #F8FAFC;         /* 60% neutral canvas */
   --color-card: #FFFFFF;           /* 30% card surface */
+  --color-card-elevated: #FFFFFF;
+  --color-card-gold-bg: #FFFBEB;
+  --color-card-border: rgba(15, 23, 42, 0.09);
+  --color-border: rgba(15, 23, 42, 0.15);
+  --color-border-subtle: rgba(15, 23, 42, 0.08);
+  --color-subtle-bg: rgba(15, 23, 42, 0.04);
+  --color-input-bg: #FFFFFF;
+  --color-input-border: rgba(15, 23, 42, 0.2);
+  --color-chip-bg: rgba(15, 23, 42, 0.05);
+  --color-chip-text: #0F172A;
+
   --color-ink: #0F172A;            /* Primary text & outlines (17.85:1 contrast) */
   --color-secondary: #475569;      /* Secondary text (7.58:1 contrast) */
   --color-action: #F4B728;         /* 10% Gold accent for primary actions */
@@ -52,19 +63,37 @@
 }
 
 [data-theme="dark"] {
-  --color-canvas: #0F172A;
-  --color-card: #1E293B;
-  --color-ink: #E2E8F0;
-  --color-secondary: #94A3B8;
-  --color-action: #F4B728;
-  --color-outline: #F8FAFC;
+  /* 60-30-10 Palette - High Contrast & Crisp Dark Theme */
+  --color-canvas: #0A0E17;         /* Deep rich dark background */
+  --color-card: #151D2A;           /* Elevated crisp card surface */
+  --color-card-elevated: #1C2638;
+  --color-card-gold-bg: rgba(244, 183, 40, 0.12);
+  --color-card-border: rgba(255, 255, 255, 0.12);
+  --color-border: rgba(255, 255, 255, 0.18);
+  --color-border-subtle: rgba(255, 255, 255, 0.1);
+  --color-subtle-bg: rgba(255, 255, 255, 0.06);
+  --color-input-bg: #0D131F;
+  --color-input-border: rgba(255, 255, 255, 0.24);
+  --color-chip-bg: rgba(255, 255, 255, 0.09);
+  --color-chip-text: #FFFFFF;
+
+  --color-ink: #FFFFFF;            /* Pure crisp white for sharp text readability */
+  --color-secondary: #CBD5E1;      /* Bright, legible slate-silver text (not dull!) */
+  --color-action: #F5BA31;         /* Bright vivid gold */
+  --color-action-hover: #fbbf24;
+  --color-action-active: #d97706;
+  --color-outline: #F5BA31;
+
+  /* Semantic Feedback in Dark Mode */
   --color-info: #60A5FA;
-  --color-success: #4ADE80;
-  --color-success-bg: #064E3B;
+  --color-success: #34D399;
+  --color-success-bg: rgba(52, 211, 153, 0.18);
   --color-error: #F87171;
-  --color-error-bg: #7F1D1D;
+  --color-error-bg: rgba(248, 113, 113, 0.18);
   --color-warning: #FBBF24;
-  --color-warning-bg: #78350F;
+  --color-warning-bg: rgba(251, 191, 36, 0.18);
+
+  --shadow-card: 0 4px 12px -2px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
 }
 
 *, *::before, *::after {

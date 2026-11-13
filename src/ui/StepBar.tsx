@@ -70,12 +70,12 @@ export const StepBar: React.FC<StepBarProps> = ({ currentStep, totalSteps = 4, o
                     : isCurrent
                     ? 'var(--color-action)'
                     : 'var(--color-card)',
-                  color: isDone ? '#FFFFFF' : '#0F172A',
+                  color: isDone ? 'var(--color-canvas)' : isCurrent ? '#0F172A' : 'var(--color-ink)',
                   border: isCurrent
-                    ? '2px solid var(--color-outline)'
+                    ? '2px solid var(--color-action)'
                     : isDone
                     ? '2px solid var(--color-ink)'
-                    : '1px solid rgba(15, 23, 42, 0.2)',
+                    : '1.5px solid var(--color-border)',
                   boxShadow: isCurrent ? '0 0 0 4px rgba(244, 183, 40, 0.25)' : 'none',
                   transition: 'all 200ms ease',
                   transform: isCurrent ? 'scale(1.05)' : 'none',
@@ -101,7 +101,7 @@ export const StepBar: React.FC<StepBarProps> = ({ currentStep, totalSteps = 4, o
                 style={{
                   flex: 1,
                   height: '2px',
-                  backgroundColor: currentStep > step.num ? 'var(--color-ink)' : 'rgba(15, 23, 42, 0.15)',
+                  backgroundColor: currentStep > step.num ? 'var(--color-ink)' : 'var(--color-border)',
                   margin: '0 4px',
                   marginBottom: '16px',
                   zIndex: 1,

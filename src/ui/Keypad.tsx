@@ -47,16 +47,17 @@ export const Keypad: React.FC<KeypadProps> = ({
   const keyStyle: React.CSSProperties = {
     minHeight: 'var(--keypad-min-height)', // 56px per Ergonomics §11
     borderRadius: 'var(--radius-md)',
-    border: '1px solid rgba(15, 23, 42, 0.12)',
+    border: '1.5px solid var(--color-border)',
     backgroundColor: 'var(--color-card)',
     color: 'var(--color-ink)',
     fontSize: '22px',
-    fontWeight: 600,
+    fontWeight: 700,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     cursor: 'pointer',
     userSelect: 'none',
+    boxShadow: 'var(--shadow-sm)',
     transition: 'background-color 100ms ease',
   };
 
@@ -78,19 +79,19 @@ export const Keypad: React.FC<KeypadProps> = ({
               style={{
                 padding: '6px 14px',
                 borderRadius: 'var(--radius-full)',
-                border: isSelected ? '2px solid var(--color-ink)' : '1px solid rgba(15, 23, 42, 0.15)',
-                backgroundColor: isSelected ? 'var(--color-action)' : 'var(--color-card)',
-                color: '#0F172A',
+                border: isSelected ? '2px solid var(--color-action)' : '1.5px solid var(--color-border)',
+                backgroundColor: isSelected ? 'var(--color-action)' : 'var(--color-chip-bg)',
+                color: isSelected ? '#0F172A' : 'var(--color-ink)',
                 cursor: 'pointer',
                 minHeight: '38px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                boxShadow: isSelected ? 'var(--shadow-sm)' : 'none',
+                boxShadow: isSelected ? '0 0 0 2px rgba(244, 183, 40, 0.3)' : 'none',
               }}
             >
               <span style={{ fontWeight: 800, fontSize: '13px' }}>{chip} ZEC</span>
-              <span style={{ fontSize: '11px', opacity: 0.75, fontWeight: 600 }}>({shortFiat})</span>
+              <span style={{ fontSize: '11px', opacity: isSelected ? 0.85 : 0.8, fontWeight: 600 }}>({shortFiat})</span>
             </button>
           );
         })}

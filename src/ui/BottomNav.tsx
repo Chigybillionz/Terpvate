@@ -61,7 +61,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           cursor: 'pointer',
           padding: '4px 8px',
           borderRadius: 'var(--radius-md)',
-          color: isSendActive ? 'var(--color-ink)' : 'var(--color-secondary)',
+          color: isSendActive ? 'var(--color-action)' : 'var(--color-secondary)',
           position: 'relative',
         }}
       >
@@ -69,16 +69,16 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           style={{
             padding: '4px 14px',
             borderRadius: 'var(--radius-full)',
-            backgroundColor: isSendActive ? 'rgba(244, 183, 40, 0.28)' : 'transparent',
+            backgroundColor: isSendActive ? 'rgba(244, 183, 40, 0.2)' : 'transparent',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             transition: 'background-color 150ms ease',
           }}
         >
-          <Gift size={20} strokeWidth={isSendActive ? 2.5 : 2} color={isSendActive ? '#0F172A' : 'currentColor'} />
+          <Gift size={20} strokeWidth={isSendActive ? 2.5 : 2} color={isSendActive ? 'var(--color-action)' : 'var(--color-secondary)'} />
         </div>
-        <span style={{ fontSize: '11px', fontWeight: isSendActive ? 800 : 500, marginTop: '2px' }}>
+        <span style={{ fontSize: '11px', fontWeight: isSendActive ? 800 : 600, marginTop: '2px' }}>
           Send
         </span>
       </button>
@@ -99,7 +99,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           cursor: 'pointer',
           padding: '4px 8px',
           borderRadius: 'var(--radius-md)',
-          color: isGiftsActive ? 'var(--color-ink)' : 'var(--color-secondary)',
+          color: isGiftsActive ? 'var(--color-action)' : 'var(--color-secondary)',
           position: 'relative',
         }}
       >
@@ -107,7 +107,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           style={{
             padding: '4px 14px',
             borderRadius: 'var(--radius-full)',
-            backgroundColor: isGiftsActive ? 'rgba(244, 183, 40, 0.28)' : 'transparent',
+            backgroundColor: isGiftsActive ? 'rgba(244, 183, 40, 0.2)' : 'transparent',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -115,7 +115,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
             transition: 'background-color 150ms ease',
           }}
         >
-          <Package size={20} strokeWidth={isGiftsActive ? 2.5 : 2} color={isGiftsActive ? '#0F172A' : 'currentColor'} />
+          <Package size={20} strokeWidth={isGiftsActive ? 2.5 : 2} color={isGiftsActive ? 'var(--color-action)' : 'var(--color-secondary)'} />
           {giftsCount > 0 && (
             <span
               style={{
@@ -136,7 +136,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
             </span>
           )}
         </div>
-        <span style={{ fontSize: '11px', fontWeight: isGiftsActive ? 800 : 500, marginTop: '2px' }}>
+        <span style={{ fontSize: '11px', fontWeight: isGiftsActive ? 800 : 600, marginTop: '2px' }}>
           My Gifts
         </span>
       </button>
@@ -157,23 +157,23 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           cursor: 'pointer',
           padding: '4px 8px',
           borderRadius: 'var(--radius-md)',
-          color: isGuideActive ? 'var(--color-ink)' : 'var(--color-secondary)',
+          color: isGuideActive ? 'var(--color-action)' : 'var(--color-secondary)',
         }}
       >
         <div
           style={{
             padding: '4px 14px',
             borderRadius: 'var(--radius-full)',
-            backgroundColor: isGuideActive ? 'rgba(244, 183, 40, 0.28)' : 'transparent',
+            backgroundColor: isGuideActive ? 'rgba(244, 183, 40, 0.2)' : 'transparent',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             transition: 'background-color 150ms ease',
           }}
         >
-          <HelpCircle size={20} strokeWidth={isGuideActive ? 2.5 : 2} color={isGuideActive ? '#0F172A' : 'currentColor'} />
+          <HelpCircle size={20} strokeWidth={isGuideActive ? 2.5 : 2} color={isGuideActive ? 'var(--color-action)' : 'var(--color-secondary)'} />
         </div>
-        <span style={{ fontSize: '11px', fontWeight: isGuideActive ? 800 : 500, marginTop: '2px' }}>
+        <span style={{ fontSize: '11px', fontWeight: isGuideActive ? 800 : 600, marginTop: '2px' }}>
           Guide
         </span>
       </button>
@@ -219,3 +219,4 @@ export const BottomNav: React.FC<BottomNavProps> = ({
     </nav>
   );
 };
+

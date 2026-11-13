@@ -45,10 +45,10 @@ export const SendScreen: React.FC<SendScreenProps> = ({ viewModel, onContinueToP
 
       {/* Amount Hero Card (Direct Manipulation §7.1) */}
       <Card style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <div style={{ fontSize: '36px', fontWeight: 800, color: '#0F172A' }}>
-          {state.zecAmount} <span style={{ fontSize: '20px', fontWeight: 600 }}>ZEC</span>
+        <div style={{ fontSize: '38px', fontWeight: 800, color: 'var(--color-ink)', letterSpacing: '-0.02em' }}>
+          {state.zecAmount} <span style={{ fontSize: '22px', fontWeight: 600, color: 'var(--color-action)' }}>ZEC</span>
         </div>
-        <div style={{ fontSize: '14px', color: 'var(--color-secondary)', marginTop: '4px' }}>
+        <div style={{ fontSize: '14px', color: 'var(--color-secondary)', marginTop: '6px', fontWeight: 600 }}>
           {state.fiatEstimate.displayString}
         </div>
       </Card>
@@ -63,7 +63,7 @@ export const SendScreen: React.FC<SendScreenProps> = ({ viewModel, onContinueToP
       <div style={{ marginTop: '24px' }}>
         <label
           htmlFor="gift-message"
-          style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}
+          style={{ display: 'block', fontSize: '14px', fontWeight: 700, marginBottom: '8px', color: 'var(--color-ink)' }}
         >
           Write a private message (optional)
         </label>
@@ -77,10 +77,10 @@ export const SendScreen: React.FC<SendScreenProps> = ({ viewModel, onContinueToP
             width: '100%',
             padding: '12px',
             borderRadius: 'var(--radius-md)',
-            border: '1px solid rgba(15, 23, 42, 0.2)',
+            border: '1.5px solid var(--color-border)',
             fontFamily: 'inherit',
             fontSize: '15px',
-            backgroundColor: 'var(--color-card)',
+            backgroundColor: 'var(--color-input-bg)',
             color: 'var(--color-ink)',
             resize: 'none',
           }}
@@ -94,13 +94,14 @@ export const SendScreen: React.FC<SendScreenProps> = ({ viewModel, onContinueToP
               type="button"
               onClick={() => viewModel.setMessage(tmpl)}
               style={{
-                background: 'rgba(15, 23, 42, 0.05)',
-                border: 'none',
+                background: 'var(--color-chip-bg)',
+                border: '1px solid var(--color-border-subtle)',
                 borderRadius: 'var(--radius-sm)',
-                padding: '4px 8px',
+                padding: '6px 10px',
                 fontSize: '12px',
                 cursor: 'pointer',
-                color: 'var(--color-ink)',
+                color: 'var(--color-chip-text)',
+                fontWeight: 600,
               }}
             >
               {tmpl}
@@ -110,12 +111,12 @@ export const SendScreen: React.FC<SendScreenProps> = ({ viewModel, onContinueToP
       </div>
 
       {/* Optional Passcode (§2 #8, §14.2) */}
-      <div style={{ marginTop: '20px', padding: '12px', borderRadius: 'var(--radius-md)', background: 'rgba(15, 23, 42, 0.03)' }}>
+      <div style={{ marginTop: '20px', padding: '14px', borderRadius: 'var(--radius-md)', background: 'var(--color-subtle-bg)', border: '1px solid var(--color-border-subtle)' }}>
         <div
           onClick={() => viewModel.togglePasscode()}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 600 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 700, color: 'var(--color-ink)' }}>
             <Lock size={16} />
             <span>Protect with Passcode</span>
           </div>
@@ -138,8 +139,8 @@ export const SendScreen: React.FC<SendScreenProps> = ({ viewModel, onContinueToP
                 width: '100%',
                 padding: '10px',
                 borderRadius: 'var(--radius-sm)',
-                border: '1px solid rgba(15, 23, 42, 0.2)',
-                backgroundColor: 'var(--color-card)',
+                border: '1.5px solid var(--color-border)',
+                backgroundColor: 'var(--color-input-bg)',
                 color: 'var(--color-ink)',
                 fontSize: '14px',
               }}

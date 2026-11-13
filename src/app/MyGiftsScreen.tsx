@@ -76,9 +76,9 @@ export const MyGiftsScreen: React.FC<MyGiftsScreenProps> = ({ viewModel, onNavig
             style={{
               padding: '6px 14px',
               borderRadius: 'var(--radius-full)',
-              border: state.filter === tab ? '1.5px solid var(--color-ink)' : '1px solid rgba(15, 23, 42, 0.15)',
+              border: state.filter === tab ? '1.5px solid var(--color-ink)' : '1.5px solid var(--color-border)',
               backgroundColor: state.filter === tab ? 'var(--color-ink)' : 'var(--color-card)',
-              color: state.filter === tab ? '#FFFFFF' : 'var(--color-ink)',
+              color: state.filter === tab ? 'var(--color-canvas)' : 'var(--color-ink)',
               fontSize: '13px',
               fontWeight: 600,
               cursor: 'pointer',
@@ -127,7 +127,7 @@ export const MyGiftsScreen: React.FC<MyGiftsScreenProps> = ({ viewModel, onNavig
                   </p>
                 )}
 
-                <div style={{ display: 'flex', gap: '8px', marginTop: '12px', borderTop: '1px solid rgba(15,23,42,0.06)', paddingTop: '12px' }}>
+                <div style={{ display: 'flex', gap: '8px', marginTop: '12px', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '12px' }}>
                   {gift.shareableLink && (
                     <Button
                       variant="secondary"

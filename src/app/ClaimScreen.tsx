@@ -115,10 +115,10 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
 
           {/* Hero Claim Figures */}
           <div style={{ margin: '20px 0 16px 0' }}>
-            <div style={{ fontSize: '38px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em' }}>
-              {zecAmount} ZEC
+            <div style={{ fontSize: '38px', fontWeight: 800, color: 'var(--color-ink)', letterSpacing: '-0.02em' }}>
+              {zecAmount} <span style={{ color: 'var(--color-action)' }}>ZEC</span>
             </div>
-            <div style={{ fontSize: '15px', fontWeight: 600, color: '#92400E', marginTop: '4px' }}>
+            <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-warning)', marginTop: '4px' }}>
               ≈ ₦{Number(fiatNgn.fiatAmount).toLocaleString()} (${fiatUsd.fiatAmount} USD)
             </div>
           </div>
@@ -149,27 +149,27 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
           </h2>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '13px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(15,23,42,0.06)', paddingBottom: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '8px' }}>
               <span style={{ color: 'var(--color-secondary)' }}>Net Amount Claimed</span>
               <span style={{ fontWeight: 800, color: 'var(--color-ink)', fontSize: '15px' }}>{zecAmount} ZEC</span>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(15,23,42,0.06)', paddingBottom: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '8px' }}>
               <span style={{ color: 'var(--color-secondary)' }}>Estimated Value</span>
               <span style={{ fontWeight: 600 }}>≈ ₦{Number(fiatNgn.fiatAmount).toLocaleString()} (${fiatUsd.fiatAmount} USD)</span>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(15,23,42,0.06)', paddingBottom: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '8px' }}>
               <span style={{ color: 'var(--color-secondary)' }}>Network Fee (ZIP 317)</span>
               <span style={{ color: 'var(--color-success)', fontWeight: 600 }}>0.0001 ZEC (Paid by Sender)</span>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(15,23,42,0.06)', paddingBottom: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '8px' }}>
               <span style={{ color: 'var(--color-secondary)' }}>Network Environment</span>
               <span style={{ fontWeight: 600, color: isTestnet ? '#7E22CE' : 'var(--color-ink)' }}>{networkName}</span>
             </div>
 
-            <div style={{ borderBottom: '1px solid rgba(15,23,42,0.06)', paddingBottom: '8px' }}>
+            <div style={{ borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '8px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                 <span style={{ color: 'var(--color-secondary)' }}>Destination Wallet</span>
                 <button
@@ -253,7 +253,7 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
           )}
 
           {/* Amount: checking... until verified on-chain (§2 A11) */}
-          <div style={{ fontSize: '40px', fontWeight: 800, color: '#0F172A', margin: '16px 0' }}>
+          <div style={{ fontSize: '40px', fontWeight: 800, color: 'var(--color-ink)', margin: '16px 0' }}>
             {state.isVerifying ? (
               <span style={{ fontSize: '24px', color: 'var(--color-secondary)' }}>checking…</span>
             ) : !state.isVerified ? (

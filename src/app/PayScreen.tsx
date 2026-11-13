@@ -160,22 +160,22 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
 
       {/* Breakdown Card (§5.1 F4, §10.4) */}
       <Card style={{ marginBottom: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(15,23,42,0.06)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
           <span style={{ color: 'var(--color-secondary)' }}>Gift amount</span>
           <span style={{ fontWeight: 600 }}>{giftZec} ZEC</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(15,23,42,0.06)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
           <span style={{ color: 'var(--color-secondary)' }}>Network fee (ZIP 317)</span>
           <span style={{ fontWeight: 600 }}>{feeZec} ZEC</span>
         </div>
 
         {state.isUnderfunded ? (
           <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(15,23,42,0.06)', color: 'var(--color-secondary)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--color-border-subtle)', color: 'var(--color-secondary)' }}>
               <span>Received so far</span>
               <span style={{ fontWeight: 600, color: 'var(--color-ink)' }}>{receivedZec} ZEC</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 4px 0', fontSize: '18px', fontWeight: 800, color: '#B45309' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 4px 0', fontSize: '18px', fontWeight: 800, color: 'var(--color-warning)' }}>
               <span>Remaining to send</span>
               <span>{remainingZec} ZEC</span>
             </div>
@@ -183,7 +183,7 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
         ) : (
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 4px 0', fontSize: '18px', fontWeight: 800 }}>
             <span>Total to send</span>
-            <span style={{ color: '#0F172A' }}>{totalZec} ZEC</span>
+            <span style={{ color: 'var(--color-ink)' }}>{totalZec} ZEC</span>
           </div>
         )}
       </Card>
@@ -194,12 +194,12 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
           textAlign: 'center',
           padding: '20px',
           marginBottom: '24px',
-          backgroundColor: '#F8FAFC',
-          border: '1.5px dashed rgba(15, 23, 42, 0.2)',
+          backgroundColor: 'var(--color-canvas)',
+          border: '1.5px dashed var(--color-border)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '8px' }}>
-          <Clock size={18} className="animate-pulse" style={{ color: '#92400E' }} />
+          <Clock size={18} className="animate-pulse" style={{ color: 'var(--color-warning)' }} />
           <span style={{ fontWeight: 700, fontSize: '15px' }}>
             {state.isUnderfunded
               ? `Partial payment seen · Awaiting remaining ${remainingZec} ZEC`
@@ -213,7 +213,7 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
         <div
           style={{
             height: '6px',
-            backgroundColor: 'rgba(15, 23, 42, 0.1)',
+            backgroundColor: 'var(--color-border)',
             borderRadius: '999px',
             overflow: 'hidden',
             margin: '12px 0',

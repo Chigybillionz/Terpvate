@@ -42,7 +42,12 @@ export const PreviewScreen: React.FC<PreviewScreenProps> = ({
 
   return (
     <div style={{ maxWidth: '440px', margin: '0 auto', width: '100%' }}>
-      <StepBar currentStep={2} />
+      <StepBar
+        currentStep={2}
+        onStepClick={(stepNum) => {
+          if (stepNum === 1) onBackToEdit();
+        }}
+      />
 
       <h1
         style={{

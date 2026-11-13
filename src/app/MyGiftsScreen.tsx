@@ -5,6 +5,7 @@ import { StatusBadge } from '../ui/StatusBadge';
 import { MyGiftsViewModel, MyGiftsState } from '../viewmodels/MyGiftsVM';
 import { GiftRecord } from '../services/StorageService';
 import { zatoshisToZec } from '../zcash/units';
+import { useToast } from '../ui/Toast';
 import { Copy, RotateCcw, Check, AlertTriangle } from 'lucide-react';
 
 interface MyGiftsScreenProps {
@@ -13,6 +14,7 @@ interface MyGiftsScreenProps {
 }
 
 export const MyGiftsScreen: React.FC<MyGiftsScreenProps> = ({ viewModel, onNavigateToSend }) => {
+  const { showToast } = useToast();
   const [state, setState] = useState<MyGiftsState>({
     gifts: [],
     filter: 'ALL',
@@ -34,6 +36,7 @@ export const MyGiftsScreen: React.FC<MyGiftsScreenProps> = ({ viewModel, onNavig
     if (gift.shareableLink) {
       navigator.clipboard.writeText(gift.shareableLink);
       setCopiedId(gift.id);
+      showToast('Gift link copied to clipboard!');
       setTimeout(() => setCopiedId(null), 2000);
     }
   };

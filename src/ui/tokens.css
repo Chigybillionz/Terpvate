@@ -119,3 +119,63 @@ body {
   top: 16px;
 }
 
+/* Tactile Micro-Interactions (Direct Manipulation §7.1) */
+.tip-btn, button {
+  transition: transform 120ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+.tip-btn:active, button:active {
+  transform: scale(0.97);
+}
+
+/* Keyframe Animations */
+@keyframes toastSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive Navigation Breakpoints */
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-bottom-nav {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .desktop-nav-links {
+    display: none !important;
+  }
+  .mobile-bottom-nav {
+    display: flex !important;
+  }
+  main {
+    padding-bottom: 84px !important; /* Prevent content clipping under bottom nav */
+  }
+}
+
+

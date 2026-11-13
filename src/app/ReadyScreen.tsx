@@ -3,6 +3,7 @@ import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { StepBar } from '../ui/StepBar';
 import { QrView } from '../ui/QrView';
+import { useToast } from '../ui/Toast';
 import { GiftRecord } from '../services/StorageService';
 import { liveAnnouncer } from '../a11y/liveAnnouncer';
 import { CheckCircle2, Copy, Share2, ShieldAlert, QrCode } from 'lucide-react';
@@ -16,6 +17,7 @@ export const ReadyScreen: React.FC<ReadyScreenProps> = ({
   gift,
   onTakeItBack,
 }) => {
+  const { showToast } = useToast();
   const [copied, setCopied] = useState(false);
   const [showQr, setShowQr] = useState(false);
   const shareableUrl = gift.shareableLink || window.location.href;
@@ -24,6 +26,7 @@ export const ReadyScreen: React.FC<ReadyScreenProps> = ({
     try {
       await navigator.clipboard.writeText(shareableUrl);
       setCopied(true);
+      showToast('Gift link copied to clipboard! Share it in WhatsApp or Signal.');
       liveAnnouncer.announce('Link copied to clipboard!');
       setTimeout(() => setCopied(false), 2500);
     } catch {

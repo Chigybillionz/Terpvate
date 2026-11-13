@@ -3,6 +3,7 @@ import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { StepBar } from '../ui/StepBar';
 import { QrView } from '../ui/QrView';
+import { useToast } from '../ui/Toast';
 import { PayViewModel, PayState } from '../viewmodels/PayVM';
 import { GiftRecord } from '../services/StorageService';
 import { LightwalletdService } from '../services/LightwalletdService';
@@ -28,6 +29,7 @@ interface PayScreenProps {
 }
 
 export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }) => {
+  const { showToast } = useToast();
   const [viewModel] = useState(() => new PayViewModel(gift));
   const [state, setState] = useState<PayState>(() => {
     const requiredZat = gift.amountZat + gift.claimFeeZat;
@@ -88,6 +90,7 @@ export const PayScreen: React.FC<PayScreenProps> = ({ gift, onPaymentConfirmed }
     try {
       await navigator.clipboard.writeText(gift.depositAddress);
       setCopiedAddress(true);
+      showToast('Deposit address copied to clipboard ✓');
       liveAnnouncer.announce('Deposit address copied to clipboard');
       setTimeout(() => setCopiedAddress(false), 2000);
     } catch {}

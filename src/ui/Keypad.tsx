@@ -1,5 +1,6 @@
 import React from 'react';
 import { Delete } from 'lucide-react';
+import { PriceService } from '../services/PriceService';
 
 interface KeypadProps {
   value: string;
@@ -61,28 +62,38 @@ export const Keypad: React.FC<KeypadProps> = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
-      {/* Preset Chips */}
-      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-        {presetChips.map((chip) => (
-          <button
-            key={chip}
-            type="button"
-            onClick={() => handleChip(chip)}
-            style={{
-              padding: '8px 16px',
-              borderRadius: 'var(--radius-full)',
-              border: value === chip.toString() ? '2px solid var(--color-ink)' : '1px solid rgba(15, 23, 42, 0.15)',
-              backgroundColor: value === chip.toString() ? 'var(--color-action)' : 'var(--color-card)',
-              color: '#0F172A',
-              fontWeight: 600,
-              fontSize: '14px',
-              cursor: 'pointer',
-              minHeight: '36px',
-            }}
-          >
-            {chip} ZEC
-          </button>
-        ))}
+      {/* Preset Chips with Instant Fiat Hints (§5.1 F1) */}
+      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        {presetChips.map((chip) => {
+          const fiat = PriceService.estimateNgn(chip);
+          const fiatNum = Number(fiat.fiatAmount);
+          const shortFiat = fiatNum >= 1000 ? `₦${Math.round(fiatNum / 1000)}k` : `₦${fiatNum}`;
+          const isSelected = value === chip.toString();
+
+          return (
+            <button
+              key={chip}
+              type="button"
+              onClick={() => handleChip(chip)}
+              style={{
+                padding: '6px 14px',
+                borderRadius: 'var(--radius-full)',
+                border: isSelected ? '2px solid var(--color-ink)' : '1px solid rgba(15, 23, 42, 0.15)',
+                backgroundColor: isSelected ? 'var(--color-action)' : 'var(--color-card)',
+                color: '#0F172A',
+                cursor: 'pointer',
+                minHeight: '38px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: isSelected ? 'var(--shadow-sm)' : 'none',
+              }}
+            >
+              <span style={{ fontWeight: 800, fontSize: '13px' }}>{chip} ZEC</span>
+              <span style={{ fontSize: '11px', opacity: 0.75, fontWeight: 600 }}>({shortFiat})</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* 3x4 Grid */}

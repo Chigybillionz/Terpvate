@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from '../ui/Header';
 import { Footer } from '../ui/Footer';
+import { BottomNav } from '../ui/BottomNav';
+import { NetworkModal } from '../ui/NetworkModal';
+import { ToastProvider, useToast } from '../ui/Toast';
 import { SendScreen } from './SendScreen';
 import { PreviewScreen } from './PreviewScreen';
 import { PayScreen } from './PayScreen';
@@ -21,11 +24,13 @@ import { LightwalletdService } from '../services/LightwalletdService';
 import { liveAnnouncer } from '../a11y/liveAnnouncer';
 import { focusHeading } from '../a11y/focusManager';
 
-export const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const { showToast } = useToast();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [network, setNetwork] = useState<'mainnet' | 'testnet'>(() => {
     return LightwalletdService.getActiveEndpoint().network;
   });
+  const [isNetworkModalOpen, setIsNetworkModalOpen] = useState(false);
   const [route, setRoute] = useState<string>('send');
   const [giftHashFragment, setGiftHashFragment] = useState<string>('');
   const [activeGift, setActiveGift] = useState<GiftRecord | null>(null);
@@ -87,6 +92,7 @@ export const App: React.FC = () => {
     const next = network === 'mainnet' ? 'testnet' : 'mainnet';
     setNetwork(next);
     LightwalletdService.setActiveEndpoint(next === 'testnet' ? 'ecc-testnet' : 'zec-rocks');
+    showToast(`Switched to Zcash ${next === 'testnet' ? 'Testnet' : 'Mainnet'}`);
     liveAnnouncer.announce(`Switched to Zcash ${next === 'testnet' ? 'Testnet' : 'Mainnet'}`);
   };
 
@@ -113,6 +119,7 @@ export const App: React.FC = () => {
         onToggleTheme={toggleTheme}
         network={network}
         onToggleNetwork={toggleNetwork}
+        onOpenNetworkModal={() => setIsNetworkModalOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -191,6 +198,32 @@ export const App: React.FC = () => {
 
       {/* Informative Footer */}
       <Footer onNavigate={navigate} />
+
+      {/* Mobile Ergonomic Bottom Navigation Dock (Fitts's Law §11) */}
+      <BottomNav
+        currentRoute={route}
+        onNavigate={navigate}
+        giftsCount={giftsCount}
+        network={network}
+        onOpenNetworkModal={() => setIsNetworkModalOpen(true)}
+      />
+
+      {/* Network & Node Settings Drawer Modal */}
+      <NetworkModal
+        isOpen={isNetworkModalOpen}
+        onClose={() => setIsNetworkModalOpen(false)}
+        network={network}
+        onSwitchNetwork={toggleNetwork}
+        onAnnounceToast={(msg) => showToast(msg)}
+      />
     </div>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <ToastProvider>
+      <AppContent />
+    </ToastProvider>
   );
 };

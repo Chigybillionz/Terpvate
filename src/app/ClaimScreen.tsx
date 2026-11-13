@@ -3,6 +3,7 @@ import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { ClaimViewModel, ClaimState } from '../viewmodels/ClaimVM';
 import { PriceService } from '../services/PriceService';
+import { useToast } from '../ui/Toast';
 import {
   CheckCircle2,
   ShieldCheck,
@@ -26,6 +27,7 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
   onNavigateToWallets,
   onNavigateToHome,
 }) => {
+  const { showToast } = useToast();
   const [viewModel] = useState(() => new ClaimViewModel(fragment));
   const [state, setState] = useState<ClaimState>(() => viewModel.getState());
   const [copiedTxid, setCopiedTxid] = useState(false);
@@ -175,6 +177,7 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
                   onClick={async () => {
                     await navigator.clipboard.writeText(state.receiverAddress);
                     setCopiedAddr(true);
+                    showToast('Destination address copied ✓');
                     setTimeout(() => setCopiedAddr(false), 2000);
                   }}
                   style={{ background: 'none', border: 'none', color: 'var(--color-info)', fontSize: '11px', cursor: 'pointer', fontWeight: 600 }}
@@ -196,6 +199,7 @@ export const ClaimScreen: React.FC<ClaimScreenProps> = ({
                     onClick={async () => {
                       await navigator.clipboard.writeText(txid);
                       setCopiedTxid(true);
+                      showToast('Transaction TXID copied ✓');
                       setTimeout(() => setCopiedTxid(false), 2000);
                     }}
                     style={{ background: 'none', border: 'none', color: 'var(--color-info)', fontSize: '11px', cursor: 'pointer', fontWeight: 600 }}

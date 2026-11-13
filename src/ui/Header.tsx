@@ -93,40 +93,40 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 left-0 right-0 z-40 px-3 sm:px-6 py-2.5 sm:py-3.5 backdrop-blur-xl border-b border-white/10 transition-colors">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+      <header className="sticky top-0 left-0 right-0 z-40 backdrop-blur-xl bg-slate-950/70 border-b border-white/10 transition-colors">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
           {/* Left: Brand Logo */}
           <div
             onClick={() => handleNavClick('send')}
-            className="flex items-center gap-2 cursor-pointer select-none group"
+            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none group"
           >
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl liquid-glass flex items-center justify-center text-action group-hover:scale-105 transition-transform">
-              <Infinity size={20} strokeWidth={2} />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl liquid-glass flex items-center justify-center text-action group-hover:scale-105 transition-transform shadow-md shadow-amber-500/10">
+              <Infinity size={22} strokeWidth={2} />
             </div>
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="text-base sm:text-lg font-bold tracking-tight text-white">
+            <div className="flex items-center gap-2">
+              <span className="text-lg sm:text-xl font-bold tracking-tight text-white">
                 Terpvate
               </span>
-              <span className="hidden xs:inline-flex text-[9px] sm:text-[10px] font-bold tracking-wider px-1.5 sm:px-2 py-0.5 rounded-full bg-action/20 text-action border border-action/30 uppercase">
+              <span className="hidden sm:inline-flex text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-full bg-action/15 text-action border border-action/30 uppercase">
                 Shielded
               </span>
             </div>
           </div>
 
           {/* Center: Liquid Glass Nav Pill (Desktop Only) */}
-          <nav className="hidden md:flex liquid-glass items-center gap-1 rounded-xl px-2 py-1.5 shadow-lg">
+          <nav className="hidden md:flex liquid-glass items-center gap-1.5 p-1.5 rounded-full shadow-lg">
             {desktopNavLinks.map((link) => (
               <button
                 key={link.id}
                 type="button"
                 onClick={() => handleNavClick(link.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer ${
                   link.active
                     ? 'bg-action text-slate-950 shadow-md shadow-amber-500/20'
                     : 'text-white/75 hover:text-white hover:bg-white/10'
                 }`}
               >
-                {link.id === 'gifts' && <Gift size={14} />}
+                {link.id === 'gifts' && <Gift size={15} />}
                 <span>{link.label}</span>
                 {Boolean(link.count && link.count > 0) && (
                   <span
@@ -142,13 +142,13 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           {/* Right: Network Pill, Theme Toggle, Mobile Menu Trigger */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Network Switcher Button */}
             <button
               type="button"
               onClick={handleNetworkClick}
               title="Click to view node and network settings"
-              className={`liquid-glass text-xs font-semibold px-2.5 sm:px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all hover:scale-[1.02] cursor-pointer ${
+              className={`liquid-glass text-xs font-semibold px-2.5 sm:px-3.5 py-1.5 rounded-full flex items-center gap-1.5 sm:gap-2 transition-all hover:scale-[1.02] cursor-pointer ${
                 network === 'testnet'
                   ? 'text-purple-300 border-purple-500/40'
                   : 'text-emerald-300 border-emerald-500/40'
@@ -159,7 +159,7 @@ export const Header: React.FC<HeaderProps> = ({
                   network === 'testnet' ? 'bg-purple-400 animate-pulse' : 'bg-emerald-400'
                 }`}
               />
-              <span className="text-[10px] sm:text-xs tracking-wider">
+              <span className="text-[10px] sm:text-xs tracking-wider font-bold">
                 {network === 'testnet' ? 'TESTNET' : 'MAINNET'}
               </span>
             </button>
@@ -169,9 +169,9 @@ export const Header: React.FC<HeaderProps> = ({
               type="button"
               onClick={onToggleTheme}
               aria-label="Toggle light / dark theme"
-              className="liquid-glass text-white/80 hover:text-white p-1.5 sm:p-2 rounded-full transition-colors flex items-center justify-center cursor-pointer"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full liquid-glass text-white/80 hover:text-white transition-colors flex items-center justify-center cursor-pointer"
             >
-              {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+              {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
             </button>
 
             {/* Mobile Menu Hamburger Toggle */}
@@ -179,7 +179,7 @@ export const Header: React.FC<HeaderProps> = ({
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              className="md:hidden liquid-glass text-white p-1.5 sm:p-2 rounded-xl transition-colors flex items-center justify-center cursor-pointer"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl liquid-glass text-white transition-colors flex items-center justify-center cursor-pointer md:hidden"
             >
               {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
@@ -190,7 +190,7 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Mobile Drawer Backdrop Scrim */}
       {menuOpen && (
         <div
-          className="fixed inset-0 bg-black/70 backdrop-blur-md z-40 md:hidden animate-fade-in"
+          className="fixed inset-0 bg-black/75 backdrop-blur-md z-50 md:hidden animate-fade-in"
           onClick={() => setMenuOpen(false)}
           aria-hidden="true"
         />
@@ -202,20 +202,20 @@ export const Header: React.FC<HeaderProps> = ({
           role="dialog"
           aria-modal="true"
           aria-label="Navigation Menu"
-          className="fixed inset-x-0 bottom-0 z-50 md:hidden bg-slate-950/98 text-white border-t border-white/20 rounded-t-[32px] p-5 sm:p-6 shadow-2xl backdrop-blur-2xl animate-slide-up max-h-[85vh] overflow-y-auto"
+          className="fixed inset-x-0 bottom-0 z-50 md:hidden bg-slate-950/98 text-white border-t border-white/20 rounded-t-[32px] p-6 shadow-2xl backdrop-blur-2xl animate-slide-up max-h-[85vh] overflow-y-auto"
         >
           {/* Bottom Sheet Drag Handle */}
-          <div className="w-12 h-1.5 bg-white/25 rounded-full mx-auto mb-4" />
+          <div className="w-12 h-1.5 bg-white/25 rounded-full mx-auto mb-5" />
 
           {/* Menu Header with Close */}
-          <div className="flex items-center justify-between pb-3.5 mb-3 border-b border-white/10">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl liquid-glass flex items-center justify-center text-action">
-                <Infinity size={18} strokeWidth={2} />
+          <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl liquid-glass flex items-center justify-center text-action">
+                <Infinity size={20} strokeWidth={2} />
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-sm font-bold tracking-tight text-white leading-tight">Terpvate</span>
-                <span className="text-[11px] text-white/50">Shielded Zcash Ecosystem</span>
+                <span className="text-base font-bold tracking-tight text-white leading-tight">Terpvate</span>
+                <span className="text-xs text-white/50">Shielded Zcash Ecosystem</span>
               </div>
             </div>
             <button
@@ -229,7 +229,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Nav Links List */}
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-2">
             {mobileNavLinks.map((link) => {
               const IconComponent = link.icon;
               return (
@@ -237,29 +237,29 @@ export const Header: React.FC<HeaderProps> = ({
                   key={link.id}
                   type="button"
                   onClick={() => handleNavClick(link.id)}
-                  className={`flex items-center justify-between w-full px-4 py-3 rounded-2xl text-sm font-semibold transition-all cursor-pointer ${
+                  className={`flex items-center justify-between w-full px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all cursor-pointer ${
                     link.active
                       ? 'bg-action/20 text-amber-300 border border-action/40 shadow-sm'
                       : 'text-white/80 hover:text-white hover:bg-white/10 active:scale-[0.98]'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3.5">
                     <div
-                      className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center ${
                         link.active ? 'bg-action/30 text-amber-300' : 'bg-white/5 text-action'
                       }`}
                     >
-                      <IconComponent size={17} />
+                      <IconComponent size={18} />
                     </div>
-                    <span className="text-sm">{link.label}</span>
+                    <span className="text-sm font-medium">{link.label}</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2.5">
                     {Boolean(link.count && link.count > 0) && (
-                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-action text-slate-950">
+                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-action text-slate-950">
                         {link.count}
                       </span>
                     )}
-                    <ChevronRight size={15} className="opacity-40" />
+                    <ChevronRight size={16} className="opacity-40" />
                   </div>
                 </button>
               );
@@ -267,8 +267,8 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Network Switcher Card in Sheet */}
-          <div className="mt-4 pt-3.5 border-t border-white/10 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
+          <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between">
+            <div className="flex items-center gap-3">
               <span
                 className={`w-2.5 h-2.5 rounded-full ${
                   network === 'testnet' ? 'bg-purple-400 animate-pulse' : 'bg-emerald-400'
@@ -284,7 +284,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={handleNetworkClick}
-              className="text-xs font-bold text-action px-3.5 py-1.5 rounded-full liquid-glass hover:bg-white/10 transition-colors cursor-pointer"
+              className="text-xs font-bold text-action px-4 py-2 rounded-full liquid-glass hover:bg-white/10 transition-colors cursor-pointer"
             >
               Switch Node
             </button>

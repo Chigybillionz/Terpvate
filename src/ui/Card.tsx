@@ -16,7 +16,7 @@ export const Card: React.FC<CardProps> = ({
   const glassVariant = variant === 'gold' ? 'liquid-glass-gold' : 'liquid-glass';
 
   const baseStyles: React.CSSProperties = {
-    borderRadius: 'var(--radius-lg)',
+    borderRadius: '24px',
     padding: '24px',
     color: 'var(--color-ink)',
     display: 'flex',

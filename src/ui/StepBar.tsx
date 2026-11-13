@@ -22,15 +22,7 @@ export const StepBar: React.FC<StepBarProps> = ({ currentStep, totalSteps = 4, o
       aria-valuemin={1}
       aria-valuemax={totalSteps}
       aria-label={`Step ${currentStep} of ${totalSteps}`}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%',
-        maxWidth: '360px',
-        margin: '0 auto 24px auto',
-        position: 'relative',
-      }}
+      className="w-full max-w-[340px] sm:max-w-[360px] mx-auto mb-4 sm:mb-6 flex items-center justify-between relative"
     >
       {STEPS.map((step, idx) => {
         const isDone = currentStep > step.num;
@@ -46,51 +38,29 @@ export const StepBar: React.FC<StepBarProps> = ({ currentStep, totalSteps = 4, o
                 }
               }}
               title={isClickable ? `Jump back to Step ${step.num} (${step.label})` : undefined}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                zIndex: 2,
-                cursor: isClickable ? 'pointer' : 'default',
-                userSelect: 'none',
-              }}
+              className={`flex flex-col items-center z-10 select-none ${
+                isClickable ? 'cursor-pointer group' : 'cursor-default'
+              }`}
             >
               <div
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: 'var(--radius-full)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 700,
-                  fontSize: '13px',
-                  backgroundColor: isDone
-                    ? 'var(--color-ink)'
-                    : isCurrent
-                    ? 'var(--color-action)'
-                    : 'var(--color-card)',
-                  color: isDone ? 'var(--color-canvas)' : isCurrent ? '#0F172A' : 'var(--color-ink)',
-                  border: isCurrent
-                    ? '2px solid var(--color-action)'
+                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all duration-200 ${
+                  isCurrent
+                    ? 'bg-action text-slate-950 ring-4 ring-amber-400/25 scale-105 shadow-md shadow-amber-500/30'
                     : isDone
-                    ? '2px solid var(--color-ink)'
-                    : '1.5px solid var(--color-border)',
-                  boxShadow: isCurrent ? '0 0 0 4px rgba(244, 183, 40, 0.25)' : 'none',
-                  transition: 'all 200ms ease',
-                  transform: isCurrent ? 'scale(1.05)' : 'none',
-                }}
+                    ? 'bg-white text-slate-950 group-hover:scale-105'
+                    : 'bg-white/5 text-white/40 border border-white/15'
+                }`}
               >
-                {isDone ? <Check size={16} strokeWidth={3} /> : step.num}
+                {isDone ? <Check size={14} strokeWidth={3} /> : step.num}
               </div>
               <span
-                style={{
-                  fontSize: '11px',
-                  marginTop: '4px',
-                  fontWeight: isCurrent ? 800 : isDone ? 600 : 500,
-                  color: isCurrent ? 'var(--color-ink)' : 'var(--color-secondary)',
-                  textDecoration: isClickable ? 'underline dotted' : 'none',
-                }}
+                className={`text-[10px] sm:text-xs mt-1.5 font-semibold transition-colors ${
+                  isCurrent
+                    ? 'text-white font-bold'
+                    : isDone
+                    ? 'text-slate-300 group-hover:text-white'
+                    : 'text-white/40'
+                } ${isClickable ? 'underline underline-offset-2 decoration-dotted' : ''}`}
               >
                 {step.label}
               </span>
@@ -98,14 +68,9 @@ export const StepBar: React.FC<StepBarProps> = ({ currentStep, totalSteps = 4, o
 
             {idx < STEPS.length - 1 && (
               <div
-                style={{
-                  flex: 1,
-                  height: '2px',
-                  backgroundColor: currentStep > step.num ? 'var(--color-ink)' : 'var(--color-border)',
-                  margin: '0 4px',
-                  marginBottom: '16px',
-                  zIndex: 1,
-                }}
+                className={`flex-1 h-[2px] mx-1.5 sm:mx-2 -mt-4 transition-colors ${
+                  currentStep > step.num ? 'bg-amber-400' : 'bg-white/15'
+                }`}
               />
             )}
           </React.Fragment>
@@ -114,4 +79,3 @@ export const StepBar: React.FC<StepBarProps> = ({ currentStep, totalSteps = 4, o
     </div>
   );
 };
-

@@ -6,41 +6,45 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
-    <footer className="w-full mt-auto py-5 px-4 text-center border-t border-white/10 backdrop-blur-xl">
-      <div className="flex justify-center gap-4 sm:gap-6 flex-wrap mb-2">
-        <button
-          type="button"
-          onClick={() => onNavigate('how')}
-          className="text-xs text-ink/70 hover:text-ink transition-colors cursor-pointer font-medium"
-        >
-          How it works
-        </button>
-        <button
-          type="button"
-          onClick={() => onNavigate('privacy')}
-          className="text-xs text-ink/70 hover:text-ink transition-colors cursor-pointer font-medium"
-        >
-          What is private
-        </button>
-        <button
-          type="button"
-          onClick={() => onNavigate('wallets')}
-          className="text-xs text-ink/70 hover:text-ink transition-colors cursor-pointer font-medium"
-        >
-          Get a wallet (3 steps)
-        </button>
-        <button
-          type="button"
-          onClick={() => onNavigate('help')}
-          className="text-xs text-ink/70 hover:text-ink transition-colors cursor-pointer font-medium"
-        >
-          Help & FAQ
-        </button>
-      </div>
+    <footer className="w-full mt-16 sm:mt-24 lg:mt-32 pt-10 pb-16 sm:pb-12 border-t border-white/10 backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+        {/* Navigation Links */}
+        <div className="flex justify-center gap-6 sm:gap-10 flex-wrap mb-4">
+          <button
+            type="button"
+            onClick={() => onNavigate('how')}
+            className="text-xs sm:text-sm text-slate-300 hover:text-white transition-colors cursor-pointer font-medium px-2 py-1"
+          >
+            How it works
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('privacy')}
+            className="text-xs sm:text-sm text-slate-300 hover:text-white transition-colors cursor-pointer font-medium px-2 py-1"
+          >
+            What is private
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('wallets')}
+            className="text-xs sm:text-sm text-slate-300 hover:text-white transition-colors cursor-pointer font-medium px-2 py-1"
+          >
+            Get a wallet (3 steps)
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('help')}
+            className="text-xs sm:text-sm text-slate-300 hover:text-white transition-colors cursor-pointer font-medium px-2 py-1"
+          >
+            Help & FAQ
+          </button>
+        </div>
 
-      <p className="text-[11px] text-secondary/60">
-        No custody · No database · No tracking · Zcash Shielded (Orchard/Sapling)
-      </p>
+        {/* Security & Protocol Disclaimer */}
+        <p className="text-xs text-slate-400 text-center leading-relaxed max-w-xl">
+          Non-custodial · No database · No tracking · Powered by Zcash Shielded Orchard & Sapling Pools
+        </p>
+      </div>
     </footer>
   );
 };

@@ -11,7 +11,6 @@ import {
   FileText,
   LifeBuoy,
   ChevronRight,
-  Server,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -105,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
               <Infinity size={20} strokeWidth={2} />
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="text-base sm:text-lg font-bold tracking-tight text-ink">
+              <span className="text-base sm:text-lg font-bold tracking-tight text-white">
                 Terpvate
               </span>
               <span className="hidden xs:inline-flex text-[9px] sm:text-[10px] font-bold tracking-wider px-1.5 sm:px-2 py-0.5 rounded-full bg-action/20 text-action border border-action/30 uppercase">
@@ -124,7 +123,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
                   link.active
                     ? 'bg-action text-slate-950 shadow-md shadow-amber-500/20'
-                    : 'text-ink/75 hover:text-ink hover:bg-white/10'
+                    : 'text-white/75 hover:text-white hover:bg-white/10'
                 }`}
               >
                 {link.id === 'gifts' && <Gift size={14} />}
@@ -170,7 +169,7 @@ export const Header: React.FC<HeaderProps> = ({
               type="button"
               onClick={onToggleTheme}
               aria-label="Toggle light / dark theme"
-              className="liquid-glass text-ink/80 hover:text-ink p-1.5 sm:p-2 rounded-full transition-colors flex items-center justify-center cursor-pointer"
+              className="liquid-glass text-white/80 hover:text-white p-1.5 sm:p-2 rounded-full transition-colors flex items-center justify-center cursor-pointer"
             >
               {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
             </button>
@@ -180,7 +179,7 @@ export const Header: React.FC<HeaderProps> = ({
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              className="md:hidden liquid-glass text-ink p-1.5 sm:p-2 rounded-xl transition-colors flex items-center justify-center cursor-pointer"
+              className="md:hidden liquid-glass text-white p-1.5 sm:p-2 rounded-xl transition-colors flex items-center justify-center cursor-pointer"
             >
               {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
@@ -191,40 +190,46 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Mobile Drawer Backdrop Scrim */}
       {menuOpen && (
         <div
-          className="fixed inset-0 bg-slate-950/75 backdrop-blur-md z-40 md:hidden animate-fade-in"
+          className="fixed inset-0 bg-black/70 backdrop-blur-md z-40 md:hidden animate-fade-in"
           onClick={() => setMenuOpen(false)}
           aria-hidden="true"
         />
       )}
 
-      {/* Mobile Elevated Slide-Down Menu Sheet */}
+      {/* Mobile Slide-Up Bottom Sheet Drawer (HCI & Fitts's Law Aligned) */}
       {menuOpen && (
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Mobile Navigation Menu"
-          className="fixed top-16 left-3 right-3 z-50 md:hidden bg-slate-950/95 text-white border border-white/20 rounded-3xl p-4 sm:p-5 shadow-2xl backdrop-blur-2xl animate-slide-down max-h-[calc(100vh-80px)] overflow-y-auto"
+          aria-label="Navigation Menu"
+          className="fixed inset-x-0 bottom-0 z-50 md:hidden bg-slate-950/98 text-white border-t border-white/20 rounded-t-[32px] p-5 sm:p-6 shadow-2xl backdrop-blur-2xl animate-slide-up max-h-[85vh] overflow-y-auto"
         >
+          {/* Bottom Sheet Drag Handle */}
+          <div className="w-12 h-1.5 bg-white/25 rounded-full mx-auto mb-4" />
+
           {/* Menu Header with Close */}
-          <div className="flex items-center justify-between pb-3 mb-2 border-b border-white/10">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg liquid-glass flex items-center justify-center text-action">
-                <Infinity size={16} strokeWidth={2} />
+          <div className="flex items-center justify-between pb-3.5 mb-3 border-b border-white/10">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl liquid-glass flex items-center justify-center text-action">
+                <Infinity size={18} strokeWidth={2} />
               </div>
-              <span className="text-sm font-bold tracking-tight text-white">Menu</span>
+              <div className="flex flex-col text-left">
+                <span className="text-sm font-bold tracking-tight text-white leading-tight">Terpvate</span>
+                <span className="text-[11px] text-white/50">Shielded Zcash Ecosystem</span>
+              </div>
             </div>
             <button
               type="button"
               onClick={() => setMenuOpen(false)}
-              className="p-1 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-colors cursor-pointer"
               aria-label="Close menu"
             >
-              <X size={18} />
+              <X size={16} />
             </button>
           </div>
 
-          {/* Nav Links Grid */}
-          <div className="flex flex-col gap-1">
+          {/* Nav Links List */}
+          <div className="flex flex-col gap-1.5">
             {mobileNavLinks.map((link) => {
               const IconComponent = link.icon;
               return (
@@ -232,50 +237,56 @@ export const Header: React.FC<HeaderProps> = ({
                   key={link.id}
                   type="button"
                   onClick={() => handleNavClick(link.id)}
-                  className={`flex items-center justify-between w-full px-3.5 py-3 rounded-2xl text-sm font-semibold transition-all cursor-pointer ${
+                  className={`flex items-center justify-between w-full px-4 py-3 rounded-2xl text-sm font-semibold transition-all cursor-pointer ${
                     link.active
-                      ? 'bg-action text-slate-950 shadow-md shadow-amber-500/20'
+                      ? 'bg-action/20 text-amber-300 border border-action/40 shadow-sm'
                       : 'text-white/80 hover:text-white hover:bg-white/10 active:scale-[0.98]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <IconComponent size={18} className={link.active ? 'text-slate-950' : 'text-action'} />
-                    <span>{link.label}</span>
+                    <div
+                      className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                        link.active ? 'bg-action/30 text-amber-300' : 'bg-white/5 text-action'
+                      }`}
+                    >
+                      <IconComponent size={17} />
+                    </div>
+                    <span className="text-sm">{link.label}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     {Boolean(link.count && link.count > 0) && (
-                      <span
-                        className={`text-xs font-extrabold px-2 py-0.5 rounded-full ${
-                          link.active ? 'bg-slate-950/20 text-slate-950' : 'bg-action text-slate-950'
-                        }`}
-                      >
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-action text-slate-950">
                         {link.count}
                       </span>
                     )}
-                    <ChevronRight size={15} className="opacity-50" />
+                    <ChevronRight size={15} className="opacity-40" />
                   </div>
                 </button>
               );
             })}
           </div>
 
-          {/* Network Switcher Card in Drawer */}
-          <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Server size={15} className="text-white/60" />
+          {/* Network Switcher Card in Sheet */}
+          <div className="mt-4 pt-3.5 border-t border-white/10 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <span
+                className={`w-2.5 h-2.5 rounded-full ${
+                  network === 'testnet' ? 'bg-purple-400 animate-pulse' : 'bg-emerald-400'
+                }`}
+              />
               <div className="flex flex-col text-left">
-                <span className="text-xs font-semibold text-white">Zcash Network</span>
+                <span className="text-xs font-bold text-white">Zcash {network.toUpperCase()}</span>
                 <span className="text-[11px] text-white/50 font-mono">
-                  {network === 'testnet' ? 'Testnet · ECC Node' : 'Mainnet · zec.rocks'}
+                  {network === 'testnet' ? 'ECC Testnet Node' : 'zec.rocks Mainnet Node'}
                 </span>
               </div>
             </div>
             <button
               type="button"
               onClick={handleNetworkClick}
-              className="text-xs font-bold text-action px-3 py-1.5 rounded-full liquid-glass hover:bg-white/10 transition-colors"
+              className="text-xs font-bold text-action px-3.5 py-1.5 rounded-full liquid-glass hover:bg-white/10 transition-colors cursor-pointer"
             >
-              Switch
+              Switch Node
             </button>
           </div>
         </div>

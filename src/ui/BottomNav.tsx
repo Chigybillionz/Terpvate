@@ -28,21 +28,19 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   return (
     <nav
       aria-label="Mobile Bottom Navigation"
-      className="mobile-bottom-nav"
+      className="mobile-bottom-nav liquid-glass md:hidden"
       style={{
         position: 'fixed',
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: 'var(--color-card)',
-        borderTop: '1px solid rgba(15, 23, 42, 0.09)',
+        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-around',
-        padding: '6px 12px calc(6px + env(safe-area-inset-bottom, 0px)) 12px',
+        padding: '6px 12px calc(8px + env(safe-area-inset-bottom, 0px)) 12px',
         zIndex: 40,
-        boxShadow: '0 -4px 16px -2px rgba(15, 23, 42, 0.05)',
-        backdropFilter: 'blur(12px)',
+        boxShadow: '0 -8px 32px 0 rgba(0, 0, 0, 0.35)',
       }}
     >
       {/* 1. Send Tab */}

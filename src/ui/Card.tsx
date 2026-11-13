@@ -13,12 +13,11 @@ export const Card: React.FC<CardProps> = ({
   className = '',
   style = {},
 }) => {
+  const glassVariant = variant === 'gold' ? 'liquid-glass-gold' : 'liquid-glass';
+
   const baseStyles: React.CSSProperties = {
-    backgroundColor: variant === 'gold' ? 'var(--color-card-gold-bg)' : 'var(--color-card)',
     borderRadius: 'var(--radius-lg)',
     padding: '24px',
-    border: variant === 'gold' ? '2px solid var(--color-action)' : '1px solid var(--color-card-border)',
-    boxShadow: variant === 'flat' ? 'none' : 'var(--shadow-card)',
     color: 'var(--color-ink)',
     display: 'flex',
     flexDirection: 'column',
@@ -28,7 +27,7 @@ export const Card: React.FC<CardProps> = ({
   };
 
   return (
-    <div style={baseStyles} className={`tip-card ${className}`}>
+    <div style={baseStyles} className={`tip-card ${glassVariant} ${className}`}>
       {children}
     </div>
   );

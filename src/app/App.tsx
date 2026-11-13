@@ -24,6 +24,9 @@ import { LightwalletdService } from '../services/LightwalletdService';
 import { liveAnnouncer } from '../a11y/liveAnnouncer';
 import { focusHeading } from '../a11y/focusManager';
 
+const BG_VIDEO =
+  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_230229_7c9bc431-46cf-489a-948d-e8144d8eb5d4.mp4';
+
 const AppContent: React.FC = () => {
   const { showToast } = useToast();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -104,7 +107,30 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="relative min-h-screen flex flex-col overflow-x-hidden selection:bg-amber-400 selection:text-slate-950">
+      {/* Background Looping Video Layer */}
+      <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover scale-105"
+          src={BG_VIDEO}
+        />
+        {/* Atmospheric Dark / Light Vignette Overlay */}
+        <div
+          className="absolute inset-0 transition-colors duration-500"
+          style={{
+            backgroundColor: theme === 'dark' ? 'rgba(7, 11, 20, 0.82)' : 'rgba(248, 250, 252, 0.86)',
+            backgroundImage:
+              theme === 'dark'
+                ? 'radial-gradient(ellipse at 50% 0%, rgba(244, 183, 40, 0.08) 0%, rgba(10, 15, 29, 0.82) 55%, rgba(4, 7, 15, 0.95) 100%)'
+                : 'radial-gradient(ellipse at 50% 0%, rgba(244, 183, 40, 0.12) 0%, rgba(248, 250, 252, 0.82) 55%, rgba(241, 245, 249, 0.94) 100%)',
+          }}
+        />
+      </div>
+
       {/* Skip Link for Keyboard / Screen Reader users (§15 POUR) */}
       <a href="#main-content" className="skip-link">
         Skip to main content
@@ -126,19 +152,14 @@ const AppContent: React.FC = () => {
       <main
         id="main-content"
         tabIndex={-1}
-        style={{
-          flex: 1,
-          padding: '24px 16px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          outline: 'none',
-        }}
+        className="flex-1 w-full flex flex-col items-center justify-center px-3 sm:px-6 py-6 pb-28 md:pb-14 outline-none"
       >
         {route === 'send' && (
           <SendScreen
             viewModel={sendVM}
             onContinueToPreview={() => setRoute('preview')}
+            onExploreHow={() => setRoute('how')}
+            onExploreWallets={() => setRoute('wallets')}
           />
         )}
 

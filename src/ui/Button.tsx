@@ -22,31 +22,33 @@ export const Button: React.FC<ButtonProps> = ({
     justifyContent: 'center',
     minHeight: 'var(--target-min-height)', // >= 48px per Fitts's Law §11
     padding: '12px 24px',
-    fontSize: '16px',
-    fontWeight: 600,
-    borderRadius: 'var(--radius-md)',
+    fontSize: '15px',
+    fontWeight: 700,
+    borderRadius: 'var(--radius-full)',
     cursor: disabled || isLoading ? 'not-allowed' : 'pointer',
     opacity: disabled ? 0.45 : 1,
     width: fullWidth ? '100%' : 'auto',
-    transition: 'all var(--transition-fast)',
+    transition: 'all 180ms cubic-bezier(0.4, 0, 0.2, 1)',
     textDecoration: 'none',
     gap: '8px',
   };
 
   let variantStyles: React.CSSProperties = {};
+  let glassClass = '';
 
   if (variant === 'primary') {
     variantStyles = {
       backgroundColor: 'var(--color-action)',
+      backgroundImage: 'linear-gradient(135deg, #F5BA31 0%, #E5A81E 100%)',
       color: '#0F172A',
-      border: '2px solid var(--color-outline)', // 2px ink outline guarantees 17.85:1 contrast
-      boxShadow: 'var(--shadow-sm)',
+      border: 'none',
+      boxShadow: '0 4px 14px -2px rgba(244, 183, 40, 0.4)',
     };
   } else if (variant === 'secondary') {
+    glassClass = 'liquid-glass';
     variantStyles = {
-      backgroundColor: 'var(--color-card)',
       color: 'var(--color-ink)',
-      border: '1.5px solid var(--color-ink)',
+      border: 'none',
     };
   } else if (variant === 'ghost') {
     variantStyles = {
@@ -55,10 +57,10 @@ export const Button: React.FC<ButtonProps> = ({
       border: 'none',
     };
   } else if (variant === 'danger') {
+    glassClass = 'liquid-glass';
     variantStyles = {
-      backgroundColor: 'var(--color-card)',
       color: 'var(--color-error)',
-      border: '1.5px solid var(--color-error)',
+      border: 'none',
     };
   }
 
@@ -66,7 +68,7 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       disabled={disabled || isLoading}
       style={{ ...baseStyles, ...variantStyles }}
-      className={`tip-btn tip-btn-${variant} ${className}`}
+      className={`tip-btn tip-btn-${variant} ${glassClass} ${className}`}
       {...props}
     >
       {isLoading ? <Loader2 className="animate-spin" size={20} /> : children}

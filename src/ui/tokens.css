@@ -71,8 +71,27 @@
   z-index: 1;
 }
 
-* {
-  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+/* Global Base Font */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    line-height: 1.5;
+    font-size: 16px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  button, input, select, textarea {
+    font-family: inherit;
+  }
 }
 
 /* Tip Visual Design System & Design Tokens (PRD §10, §11) */
@@ -214,23 +233,7 @@
   --shadow-card: 0 4px 12px -2px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
-}
 
-body {
-  font-family: var(--font-system);
-  background-color: var(--color-canvas);
-  color: var(--color-ink);
-  line-height: 1.5;
-  font-size: 16px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
 
 /* Accessible Focus Styling */
 :focus-visible {

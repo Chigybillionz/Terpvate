@@ -94,42 +94,42 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header className="sticky top-0 left-0 right-0 z-40 backdrop-blur-xl bg-slate-950/80 border-b border-white/10 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between relative">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Left: Brand Logo */}
           <div
             onClick={() => handleNavClick('send')}
-            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none group z-10"
+            className="flex items-center gap-2.5 cursor-pointer select-none group shrink-0"
           >
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl liquid-glass flex items-center justify-center text-action group-hover:scale-105 transition-transform shadow-md shadow-amber-500/10">
-              <Infinity size={22} strokeWidth={2} />
+            <div className="w-9 h-9 rounded-xl liquid-glass flex items-center justify-center text-action group-hover:scale-105 transition-transform shadow-md shadow-amber-500/10">
+              <Infinity size={20} strokeWidth={2} />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-lg sm:text-xl font-bold tracking-tight text-white">
+              <span className="text-lg font-bold tracking-tight text-white">
                 Terpvate
               </span>
-              <span className="hidden sm:inline-flex text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-full bg-action/15 text-action border border-action/30 uppercase">
+              <span className="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-full bg-action/15 text-action border border-action/30 uppercase">
                 Shielded
               </span>
             </div>
           </div>
 
-          {/* Center: True Mathematically Centered Nav Pill (Desktop Only) */}
-          <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 liquid-glass items-center gap-1 p-1.5 rounded-full shadow-lg border border-white/10 backdrop-blur-xl">
+          {/* Center: Desktop Nav Pill (Single Pill Container) */}
+          <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl">
             {desktopNavLinks.map((link) => (
               <button
                 key={link.id}
                 type="button"
                 onClick={() => handleNavClick(link.id)}
-                className={`flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer ${
+                className={`px-4 py-1.5 rounded-full text-sm whitespace-nowrap font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
                   link.active
-                    ? 'bg-action text-slate-950 shadow-md shadow-amber-500/25'
+                    ? 'bg-action text-slate-950 font-bold shadow-sm'
                     : 'text-slate-300 hover:text-white hover:bg-white/10'
                 }`}
               >
                 <span>{link.label}</span>
                 {Boolean(link.count && link.count > 0) && (
                   <span
-                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-1.5 leading-none ${
+                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none ${
                       link.active
                         ? 'bg-slate-950/20 text-slate-950'
                         : 'bg-action/25 text-amber-300 border border-action/40'
@@ -142,25 +142,25 @@ export const Header: React.FC<HeaderProps> = ({
             ))}
           </nav>
 
-          {/* Right: Network Pill, Theme Toggle, Mobile Menu Trigger */}
-          <div className="flex items-center gap-2 sm:gap-3 z-10">
-            {/* Network Switcher Button */}
+          {/* Right: Actions Row (shrink-0) */}
+          <div className="flex items-center gap-3 shrink-0">
+            {/* Network Switcher Button (hidden on mobile) */}
             <button
               type="button"
               onClick={handleNetworkClick}
               title="Click to view node and network settings"
-              className={`liquid-glass text-xs font-semibold px-2.5 sm:px-3.5 py-1.5 rounded-full flex items-center gap-1.5 sm:gap-2 transition-all hover:scale-[1.02] cursor-pointer ${
+              className={`hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold liquid-glass transition-all hover:scale-[1.02] cursor-pointer ${
                 network === 'testnet'
                   ? 'text-purple-300 border-purple-500/40'
                   : 'text-emerald-300 border-emerald-500/40'
               }`}
             >
               <span
-                className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${
+                className={`w-1.5 h-1.5 rounded-full ${
                   network === 'testnet' ? 'bg-purple-400 animate-pulse' : 'bg-emerald-400'
                 }`}
               />
-              <span className="text-[10px] sm:text-xs tracking-wider font-bold">
+              <span className="text-[10px] tracking-wider font-bold">
                 {network === 'testnet' ? 'TESTNET' : 'MAINNET'}
               </span>
             </button>
@@ -170,7 +170,7 @@ export const Header: React.FC<HeaderProps> = ({
               type="button"
               onClick={onToggleTheme}
               aria-label="Toggle light / dark theme"
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full liquid-glass text-white/80 hover:text-white transition-colors flex items-center justify-center cursor-pointer"
+              className="w-9 h-9 rounded-full liquid-glass text-white/80 hover:text-white transition-colors flex items-center justify-center cursor-pointer"
             >
               {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
             </button>
@@ -180,7 +180,7 @@ export const Header: React.FC<HeaderProps> = ({
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl liquid-glass text-white transition-colors flex items-center justify-center cursor-pointer md:hidden"
+              className="md:hidden w-9 h-9 rounded-xl liquid-glass text-white transition-colors flex items-center justify-center cursor-pointer"
             >
               {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>

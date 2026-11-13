@@ -38,7 +38,7 @@ export const SendScreen: React.FC<SendScreenProps> = ({
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-6 lg:py-8">
       {/* Mobile-Only Clean Scaled Header (§2 & User Ergonomics) */}
       <div className="flex lg:hidden flex-col items-center text-center mb-4 sm:mb-6">
-        <div className="liquid-glass inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold text-amber-300 mb-2 border border-amber-400/20 shadow-sm">
+        <div className="liquid-glass inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold text-amber-300 mb-2 border border-amber-400/20 shadow-sm">
           <Shield size={12} className="text-amber-400" />
           <span>Shielded Zcash Gifting</span>
         </div>
@@ -61,7 +61,7 @@ export const SendScreen: React.FC<SendScreenProps> = ({
         {/* Left Column: Full Hero Introduction (Desktop Only §1) */}
         <div className="hidden lg:flex lg:col-span-7 xl:col-span-7 flex-col items-start text-left pt-2">
           {/* Glowing Shielded Badge */}
-          <div className="liquid-glass inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold text-amber-300 mb-6 border border-amber-400/25 shadow-lg shadow-amber-500/10">
+          <div className="liquid-glass inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold text-amber-300 mb-6 border border-amber-400/25 shadow-lg shadow-amber-500/10">
             <Shield size={14} className="text-amber-400" />
             <span>Shielded Zcash Gifting</span>
           </div>
@@ -81,28 +81,28 @@ export const SendScreen: React.FC<SendScreenProps> = ({
           </p>
 
           {/* Feature Micro-Badges */}
-          <div className="flex flex-wrap gap-3 mb-8">
-            <div className="liquid-glass px-3.5 py-1.5 rounded-full text-xs text-white/85 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          <div className="flex flex-wrap gap-2.5 mb-8">
+            <div className="liquid-glass px-3.5 py-1.5 rounded-full text-xs text-white/85 inline-flex items-center gap-1.5 border border-white/10">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
               <span>Non-Custodial</span>
             </div>
-            <div className="liquid-glass px-3.5 py-1.5 rounded-full text-xs text-white/85 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+            <div className="liquid-glass px-3.5 py-1.5 rounded-full text-xs text-white/85 inline-flex items-center gap-1.5 border border-white/10">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
               <span>Zero-Knowledge Proofs</span>
             </div>
-            <div className="liquid-glass px-3.5 py-1.5 rounded-full text-xs text-white/85 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+            <div className="liquid-glass px-3.5 py-1.5 rounded-full text-xs text-white/85 inline-flex items-center gap-1.5 border border-white/10">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
               <span>Secret # URL Hash</span>
             </div>
           </div>
 
           {/* Hero CTAs */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {onExploreHow && (
               <button
                 type="button"
                 onClick={onExploreHow}
-                className="bg-white text-slate-950 font-semibold text-sm sm:text-base px-7 py-3.5 rounded-full hover:bg-slate-100 active:scale-95 transition-all shadow-lg shadow-white/10 flex items-center gap-2 cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/5 border border-white/15 text-sm font-medium text-white hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
               >
                 <HelpCircle size={17} />
                 <span>How It Works</span>
@@ -112,7 +112,7 @@ export const SendScreen: React.FC<SendScreenProps> = ({
               <button
                 type="button"
                 onClick={onExploreWallets}
-                className="liquid-glass text-white font-medium text-sm sm:text-base px-7 py-3.5 rounded-full hover:bg-white/10 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/5 border border-white/15 text-sm font-medium text-white hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
               >
                 <Wallet size={17} />
                 <span>Supported Wallets</span>

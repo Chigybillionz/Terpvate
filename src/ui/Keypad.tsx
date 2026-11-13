@@ -47,7 +47,7 @@ export const Keypad: React.FC<KeypadProps> = ({
   return (
     <div className="flex flex-col gap-3 sm:gap-3.5 w-full">
       {/* Preset Chips with Instant Fiat Hints (§5.1 F1) */}
-      <div className="flex gap-1.5 sm:gap-2 justify-center flex-wrap">
+      <div className="grid grid-cols-3 gap-2.5 w-full">
         {presetChips.map((chip) => {
           const fiat = PriceService.estimateNgn(chip);
           const fiatNum = Number(fiat.fiatAmount);
@@ -59,15 +59,15 @@ export const Keypad: React.FC<KeypadProps> = ({
               key={chip}
               type="button"
               onClick={() => handleChip(chip)}
-              className={`min-h-[38px] sm:min-h-[40px] px-3 sm:px-4 py-1.5 rounded-full inline-flex items-center gap-1.5 cursor-pointer transition-all duration-200 active:scale-95 ${
+              className={`px-2 py-2 rounded-full text-xs inline-flex items-center justify-center gap-1 cursor-pointer transition-all duration-200 active:scale-95 whitespace-nowrap ${
                 isSelected
-                  ? 'bg-action text-slate-950 font-extrabold shadow-lg shadow-amber-500/30 ring-2 ring-amber-300 scale-102'
-                  : 'liquid-glass text-white/85 hover:text-white hover:bg-white/10'
+                  ? 'bg-action text-slate-950 font-extrabold shadow-lg shadow-amber-500/30 ring-2 ring-amber-300'
+                  : 'liquid-glass text-white/85 hover:text-white hover:bg-white/10 border border-white/10'
               }`}
             >
-              <span className="font-extrabold text-xs sm:text-sm">{chip} ZEC</span>
+              <span className="font-extrabold">{chip} ZEC</span>
               <span
-                className={`text-[11px] sm:text-xs font-semibold ${
+                className={`text-[10px] font-semibold ${
                   isSelected ? 'text-slate-900' : 'text-white/60'
                 }`}
               >

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Infinity,
+  Send,
   Menu,
   X,
   Sun,
@@ -69,7 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   const mobileNavLinks = [
-    { id: 'send', label: 'Send a Gift', icon: Infinity, active: isSendActive },
+    { id: 'send', label: 'Send a Gift', icon: Send, active: isSendActive },
     { id: 'gifts', label: 'My Gifts', icon: Gift, count: giftsCount, active: currentRoute === 'gifts' },
     { id: 'how', label: 'How It Works', icon: HelpCircle, active: currentRoute === 'how' },
     { id: 'wallets', label: 'Supported Wallets', icon: Shield, active: currentRoute === 'wallets' },
@@ -100,9 +100,11 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => handleNavClick('send')}
             className="flex items-center gap-2.5 cursor-pointer select-none group shrink-0"
           >
-            <div className="w-9 h-9 rounded-xl liquid-glass flex items-center justify-center text-action group-hover:scale-105 transition-transform shadow-md shadow-amber-500/10">
-              <Infinity size={20} strokeWidth={2} />
-            </div>
+            <img
+              src="/logo.jpg"
+              alt="Terpvate logo"
+              className="w-9 h-9 rounded-xl object-cover border border-amber-400/40 shadow-md shadow-amber-500/10 group-hover:scale-105 transition-transform"
+            />
             <div className="flex items-center gap-2">
               <span className="text-lg font-bold tracking-tight text-white">
                 Terpvate
@@ -211,9 +213,11 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Menu Header with Close */}
           <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl liquid-glass flex items-center justify-center text-action">
-                <Infinity size={20} strokeWidth={2} />
-              </div>
+              <img
+                src="/logo.jpg"
+                alt="Terpvate logo"
+                className="w-9 h-9 rounded-xl object-cover border border-amber-400/40 shadow-sm"
+              />
               <div className="flex flex-col text-left">
                 <span className="text-base font-bold tracking-tight text-white leading-tight">Terpvate</span>
                 <span className="text-xs text-white/50">Shielded Zcash Ecosystem</span>

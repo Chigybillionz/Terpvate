@@ -138,7 +138,7 @@ export class StorageService {
 
   static async getSettings(): Promise<AppSettings> {
     const defaults: AppSettings = {
-      theme: 'light',
+      theme: 'dark',
       language: 'en',
       fiat: 'NGN',
     };

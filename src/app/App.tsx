@@ -29,7 +29,7 @@ const BG_VIDEO =
 
 const AppContent: React.FC = () => {
   const { showToast } = useToast();
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [network, setNetwork] = useState<'mainnet' | 'testnet'>(() => {
     return LightwalletdService.getActiveEndpoint().network;
   });
@@ -47,10 +47,16 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     liveAnnouncer.init();
 
-    // Load initial settings
+    // Load initial settings - default to dark for the cinematic liquid glass aesthetic
     StorageService.getSettings()
       .then((settings) => {
-        setTheme(settings.theme === 'dark' ? 'dark' : 'light');
+        if (!localStorage.getItem('terpvate_theme_initialized')) {
+          setTheme('dark');
+          StorageService.saveSettings({ theme: 'dark' });
+          localStorage.setItem('terpvate_theme_initialized', 'true');
+        } else {
+          setTheme(settings.theme === 'light' ? 'light' : 'dark');
+        }
       })
       .catch(() => {});
 
@@ -88,6 +94,7 @@ const AppContent: React.FC = () => {
   const toggleTheme = () => {
     const next = theme === 'light' ? 'dark' : 'light';
     setTheme(next);
+    localStorage.setItem('terpvate_theme_initialized', 'true');
     StorageService.saveSettings({ theme: next });
   };
 
@@ -122,11 +129,11 @@ const AppContent: React.FC = () => {
         <div
           className="absolute inset-0 transition-colors duration-500"
           style={{
-            backgroundColor: theme === 'dark' ? 'rgba(7, 11, 20, 0.82)' : 'rgba(248, 250, 252, 0.86)',
+            backgroundColor: theme === 'dark' ? 'rgba(7, 11, 20, 0.65)' : 'rgba(240, 244, 248, 0.50)',
             backgroundImage:
               theme === 'dark'
-                ? 'radial-gradient(ellipse at 50% 0%, rgba(244, 183, 40, 0.08) 0%, rgba(10, 15, 29, 0.82) 55%, rgba(4, 7, 15, 0.95) 100%)'
-                : 'radial-gradient(ellipse at 50% 0%, rgba(244, 183, 40, 0.12) 0%, rgba(248, 250, 252, 0.82) 55%, rgba(241, 245, 249, 0.94) 100%)',
+                ? 'radial-gradient(ellipse at 50% 0%, rgba(244, 183, 40, 0.06) 0%, rgba(10, 15, 29, 0.72) 55%, rgba(4, 7, 15, 0.88) 100%)'
+                : 'radial-gradient(ellipse at 50% 0%, rgba(244, 183, 40, 0.08) 0%, rgba(240, 244, 248, 0.50) 55%, rgba(226, 232, 240, 0.70) 100%)',
           }}
         />
       </div>

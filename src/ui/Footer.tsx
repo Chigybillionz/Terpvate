@@ -6,68 +6,41 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
-    <footer
-      style={{
-        marginTop: 'auto',
-        padding: '24px 16px',
-        borderTop: '1px solid rgba(15, 23, 42, 0.08)',
-        backgroundColor: 'var(--color-card)',
-        textAlign: 'center',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '16px',
-          flexWrap: 'wrap',
-          marginBottom: '12px',
-        }}
-      >
+    <footer className="w-full mt-auto py-5 px-4 text-center border-t border-white/10 backdrop-blur-xl">
+      <div className="flex justify-center gap-4 sm:gap-6 flex-wrap mb-2">
         <button
           type="button"
           onClick={() => onNavigate('how')}
-          style={linkStyle}
+          className="text-xs text-ink/70 hover:text-ink transition-colors cursor-pointer font-medium"
         >
           How it works
         </button>
         <button
           type="button"
           onClick={() => onNavigate('privacy')}
-          style={linkStyle}
+          className="text-xs text-ink/70 hover:text-ink transition-colors cursor-pointer font-medium"
         >
           What is private
         </button>
         <button
           type="button"
           onClick={() => onNavigate('wallets')}
-          style={linkStyle}
+          className="text-xs text-ink/70 hover:text-ink transition-colors cursor-pointer font-medium"
         >
           Get a wallet (3 steps)
         </button>
         <button
           type="button"
           onClick={() => onNavigate('help')}
-          style={linkStyle}
+          className="text-xs text-ink/70 hover:text-ink transition-colors cursor-pointer font-medium"
         >
           Help & FAQ
         </button>
       </div>
 
-      <p style={{ fontSize: '12px', color: 'var(--color-secondary)' }}>
+      <p className="text-[11px] text-secondary/60">
         No custody · No database · No tracking · Zcash Shielded (Orchard/Sapling)
       </p>
     </footer>
   );
 };
-
-const linkStyle: React.CSSProperties = {
-  background: 'none',
-  border: 'none',
-  color: 'var(--color-info)',
-  fontSize: '13px',
-  fontWeight: 500,
-  cursor: 'pointer',
-  padding: '4px',
-};
-

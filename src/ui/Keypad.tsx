@@ -61,12 +61,14 @@ export const Keypad: React.FC<KeypadProps> = ({
               onClick={() => handleChip(chip)}
               className={`min-h-[40px] px-4 py-1.5 rounded-full inline-flex items-center gap-1.5 cursor-pointer transition-all duration-200 active:scale-95 ${
                 isSelected
-                  ? 'liquid-glass-gold text-amber-300 font-bold shadow-md shadow-amber-500/20 ring-1 ring-amber-400/50'
-                  : 'liquid-glass text-ink/80 hover:text-ink hover:bg-white/10'
+                  ? 'bg-action text-slate-950 font-extrabold shadow-lg shadow-amber-500/30 ring-2 ring-amber-300'
+                  : 'liquid-glass text-white/85 hover:text-white hover:bg-white/10'
               }`}
             >
               <span className="font-extrabold text-sm">{chip} ZEC</span>
-              <span className="text-xs opacity-75 font-semibold">({shortFiat})</span>
+              <span className={`text-xs font-semibold ${isSelected ? 'text-slate-900' : 'text-white/60'}`}>
+                ({shortFiat})
+              </span>
             </button>
           );
         })}
@@ -80,7 +82,7 @@ export const Keypad: React.FC<KeypadProps> = ({
             type="button"
             onClick={() => handleDigit(d)}
             aria-label={`Digit ${d}`}
-            className="liquid-glass h-14 rounded-2xl flex items-center justify-center font-bold text-2xl text-ink hover:bg-white/10 active:scale-95 transition-all select-none cursor-pointer"
+            className="liquid-glass h-14 rounded-2xl flex items-center justify-center font-bold text-2xl text-white hover:bg-white/10 active:scale-95 transition-all select-none cursor-pointer"
           >
             {d}
           </button>
@@ -89,7 +91,7 @@ export const Keypad: React.FC<KeypadProps> = ({
           type="button"
           onClick={handleBackspace}
           aria-label="Backspace"
-          className="liquid-glass h-14 rounded-2xl flex items-center justify-center text-ink hover:bg-white/10 active:scale-95 transition-all select-none cursor-pointer"
+          className="liquid-glass h-14 rounded-2xl flex items-center justify-center text-white hover:bg-white/10 active:scale-95 transition-all select-none cursor-pointer"
         >
           <Delete size={22} />
         </button>

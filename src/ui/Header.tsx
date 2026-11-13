@@ -121,16 +121,20 @@ export const Header: React.FC<HeaderProps> = ({
                 key={link.id}
                 type="button"
                 onClick={() => handleNavClick(link.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
                   link.active
-                    ? 'bg-white/15 text-white shadow-sm'
-                    : 'text-white/70 hover:text-white hover:bg-white/5'
+                    ? 'bg-action text-slate-950 shadow-md shadow-amber-500/20'
+                    : 'text-ink/75 hover:text-ink hover:bg-white/10'
                 }`}
               >
                 {link.id === 'gifts' && <Gift size={14} />}
                 <span>{link.label}</span>
                 {Boolean(link.count && link.count > 0) && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-action text-slate-950 ml-0.5">
+                  <span
+                    className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ml-0.5 ${
+                      link.active ? 'bg-slate-950/20 text-slate-950' : 'bg-action text-slate-950'
+                    }`}
+                  >
                     {link.count}
                   </span>
                 )}

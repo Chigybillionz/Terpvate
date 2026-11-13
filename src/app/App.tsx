@@ -129,11 +129,11 @@ const AppContent: React.FC = () => {
         <div
           className="absolute inset-0 transition-colors duration-500"
           style={{
-            backgroundColor: theme === 'dark' ? 'rgba(7, 11, 20, 0.65)' : 'rgba(240, 244, 248, 0.50)',
+            backgroundColor: theme === 'dark' ? 'rgba(7, 11, 20, 0.65)' : 'rgba(248, 250, 252, 0.88)',
             backgroundImage:
               theme === 'dark'
                 ? 'radial-gradient(ellipse at 50% 0%, rgba(244, 183, 40, 0.06) 0%, rgba(10, 15, 29, 0.72) 55%, rgba(4, 7, 15, 0.88) 100%)'
-                : 'radial-gradient(ellipse at 50% 0%, rgba(244, 183, 40, 0.08) 0%, rgba(240, 244, 248, 0.50) 55%, rgba(226, 232, 240, 0.70) 100%)',
+                : 'radial-gradient(ellipse at 50% 0%, rgba(244, 183, 40, 0.06) 0%, rgba(248, 250, 252, 0.85) 55%, rgba(241, 245, 249, 0.95) 100%)',
           }}
         />
       </div>
